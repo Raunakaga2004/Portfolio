@@ -18,7 +18,7 @@ datasource db {
 model Content {
   id        String   @id @default(cuid())
   title String @unique
-  content String
+  content String @db.Text
   imageURL String? // to add image with it
 }
 

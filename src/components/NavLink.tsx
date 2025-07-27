@@ -1,8 +1,10 @@
+import Link from "next/link"
+
 export default function NavLink(props : {
   name : string,
   href : string
 }){
   return <div>
-    <link href={props.href}>{props.name}</link>
+    <Link href={props.href}>{props.name}</Link>
   </div>
 }
