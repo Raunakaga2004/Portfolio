@@ -1,4 +1,6 @@
-import Image from "next/image";
+"use server";
+
+// main portfolio website 
 
 export default function Home() {
   return (
