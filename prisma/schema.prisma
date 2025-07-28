@@ -55,4 +55,5 @@ model Contact {
   id        String   @id @default(cuid())
   username String
   link String
+  icon_url String
 }
