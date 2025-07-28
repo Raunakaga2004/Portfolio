@@ -41,7 +41,7 @@ model Skill {
 // project table
 model Project {
   id        String   @id @default(cuid())
-  title String 
+  title String
   description String
   tech_stack_used String[]
   project_image_URL String?
