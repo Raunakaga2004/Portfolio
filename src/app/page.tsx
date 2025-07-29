@@ -3,68 +3,28 @@
 // main portfolio website 
 
 import Logo from "@/components/Logo";
+import { qwigley } from "./layout";
 
 export default async function Home() {
   return (
-    <div className="">
-      <div className='w-screen flex flex-row'>
-        <Logo/>
-      </div>
-      
-      {/* Intro Section */}
-      <div className="flex justify-center items-center">
-        <img src={"/image/raunak.png"} className="h-[300px]"/>
-        <div>
-          <div>
-            I'm a full-stack developer specializing in building modern, scalable web applications with technologies like Next.js, TypeScript, and PostgreSQL.
-            Passionate about creating impactful digital experiences with clean code, intuitive UI, and powerful backend logic.
-          </div>
-
-          {/* CTA button */}
-          <button>Resume</button>
-          <button>View My Work</button>
-          {/* <button>Hire me</button> */}
-        </div>
-      </div>
-
-      {/* Who am I section */}
-      <div className="flex justify-center items-center">
-        <div>
-          <div>
-            Who Am I?
-          </div>
-          <div>
-            Beyond code, I'm someone who thrives on curiosity, continuous learning, and building things that genuinely help people.
-            I believe in disciplined execution, clean design, and using technology as a tool to solve real-world problems with impact.
-          </div>
+    <div className="h-screen w-screen">
+      {/* intro section */}
+      <div className="">
+        <div className={`${qwigley.className}`}>
+          <div className="text-fortext">Raunak</div>
+          <div className="text-secondary">Agarwal</div>
         </div>
 
-        <img src={"/image/whoami.png"} className="h-[300px]"/>
-      </div>
+        
 
-      {/* What do I offer */}
-      <div>
-        <div>
-          <div>What Do I Offer?</div>
-          <div>
-            <div>for clients</div>
-            <div>for hiring teams</div>
-            <div>skills at glance</div>
-          </div>
+        <div className="absolute top-0 left-0 h-screen w-screen flex justify-center items-end overflow-y-hidden">
+          
+          <div className="absolute w-[530px] h-[700px] bg-primary rounded-[60%/60%_60%_60%_60%] rotate-325 -translate-y-[5%] "/>
+          <img src={"/image/image.png"} className="h-[700px] absolute"/> 
+          
+          {/* <div className="absolute w-[430px] h-[600px] bg-primary rounded-[60%/60%_60%_60%_60%] rotate-325"/> */}
         </div>
-        <div>
-          {/* Grid section of icons */}
-        </div>
-      </div>
-
-      {/* What have I built */}
-      <div>
-        <div>What have I Built</div>
-      </div>
-
-      {/* How to reach out */}
-      <div>
-        <div>How to Reach Out</div>
+        
       </div>
     </div>
   );

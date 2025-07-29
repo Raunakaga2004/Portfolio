@@ -21,12 +21,7 @@ export default function({contacts, fetchContacts} : {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
   
   return <div>
-    {contacts.map((contact : {
-      id : string
-      username : string,
-      link : string,
-      icon_url : string
-    }) => {
+    {contacts.map((contact : ContactType) => {
 
       const handleUpdateContact = async ()=>{
         // add backend endpoint here

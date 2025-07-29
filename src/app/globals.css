@@ -1,4 +1,12 @@
 @import "tailwindcss";
+
+@theme inline {
+  --color-primary: #6246EA;
+  --color-secondary: #D1D1E9;
+  --color-fortext: #FFFFFF;
+  --color-backgroundcolor : #16161A;
+}
+
 /* 
 :root {
   --background: #ffffff;
