@@ -7,7 +7,8 @@ type SkillType = {
   description :string,
   status : string,
   show : boolean,
-  iconURL : string
+  iconURL : string,
+  category : string[]
 }
 
 export default function({skills, fetchSkills} : {
@@ -23,16 +24,13 @@ export default function({skills, fetchSkills} : {
   const [status, setStatus] = useState("NOT_STARTED");
   const [show, setShow] = useState(false);
 
+  const [category, setcategory] = useState<string[]>([]);
+  const category_name_ref = useRef<HTMLInputElement>(null);
+
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
   
   return <div>
-    {skills.map((skill : {
-      name : string,
-      description : string,
-      status : string,
-      show : boolean,
-      icon_url? : string
-    }) => {
+    {skills.map((skill : SkillType) => {
 
       const handleUpdateSkill = async ()=>{
         // add backend endpoint here
@@ -44,7 +42,8 @@ export default function({skills, fetchSkills} : {
           description : desc,
           status : status,
           show : show,
-          iconURL : icon
+          iconURL : icon,
+          category : category
         }).then(()=>{
           alert("Skill Updated successfully!")
           setOpen(false);
@@ -69,7 +68,8 @@ export default function({skills, fetchSkills} : {
         setdesc(skill.description);
         setStatus(skill.status);
         setShow(skill.show);
-        seticon(skill.icon_url || "");
+        seticon(skill.iconURL || "");
+        setcategory(skill.category);
 
         setOpen(true);
       }
@@ -109,9 +109,28 @@ export default function({skills, fetchSkills} : {
               <input type="text" onChange={(e)=>seticon(e.target.value)}/>
             </div>
 
+            <div>
+              <label>Category : </label>
+              <input ref={category_name_ref}/>
+              <button onClick={()=>{
+                if(category_name_ref.current)
+                  setcategory([...category, category_name_ref.current?.value])
+              }}>+</button>
+              {category.map((cat, index)=>{
+                return <div key={index} onClick={()=>{
+                  setcategory(category.filter((_,id)=>id !== index));
+                }}>
+                  {cat}
+                </div>
+              })}
+            </div>
+
             <button onClick={()=>handleUpdateSkill()}>Update Skill</button>
 
-            <button onClick={()=> setOpen(false)}>Close</button>
+            <button onClick={()=> {
+              setcategory([]);
+              setOpen(false)
+            }}>Close</button>
           </div>
         </div>}
 
@@ -120,6 +139,10 @@ export default function({skills, fetchSkills} : {
         <div> {skill.description} </div>
         <div> {skill.status} </div>
         <div> {"show : "}{skill.show ? "✅" : "❌"} </div>
+        <div> {"category : "}{skill.category.map((cat, id)=>{
+          return <div key={id}> {cat} </div>
+        })}
+        </div>
 
         <button onClick={handleDelete}>delete</button>
         <button onClick={handleUpdateWindow}>update</button>

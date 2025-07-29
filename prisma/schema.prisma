@@ -36,6 +36,7 @@ model Skill {
   status Status @default(NOT_STARTED)
   show Boolean @default(false) //to show on main portfolio or not
   iconURL String? // for skills icon grid
+  category String[]
 }
 
 // project table
@@ -48,6 +49,8 @@ model Project {
   project_video_URL String?
   status Status @default(NOT_STARTED)
   show Boolean @default(false)
+  live_link String?
+  github_link String?
 }
 
 // contacts

@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req : NextRequest){
   const body = await req.json();
-  const {title, description, tech_stack_used, project_image_URL, project_video_URL, status, show} = body;
+  const {title, description, tech_stack_used, project_image_URL, project_video_URL, status, show, live_link, github_link} = body;
 
   await prisma.project.create({
     data : {
@@ -13,7 +13,9 @@ export async function POST(req : NextRequest){
       project_image_URL,
       project_video_URL,
       status,
-      show
+      show,
+      live_link,
+      github_link
     }
   })
 
@@ -40,7 +42,7 @@ export async function DELETE(req : NextRequest){
 export async function PUT(req : NextRequest){
   const body = await req.json();
 
-  const {id, title, description, tech_stack_used, project_image_URL, project_video_URL, status, show} = body;
+  const {id, title, description, tech_stack_used, project_image_URL, project_video_URL, status, show, live_link, github_link} = body;
 
   await prisma.project.update({
     where : {
@@ -54,6 +56,8 @@ export async function PUT(req : NextRequest){
       project_video_URL,
       status,
       show,
+      live_link,
+      github_link
     }
   }
   )

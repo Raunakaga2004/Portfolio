@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req : NextRequest){
   const body = await req.json();
-  const {name, description, status, show, iconURL} = body;
+  const {name, description, status, show, iconURL, category} = body;
 
   await prisma.skill.create({
     data : {
@@ -11,7 +11,8 @@ export async function POST(req : NextRequest){
       description,
       status,
       show,
-      iconURL
+      iconURL,
+      category
     }
   })
 
@@ -38,7 +39,7 @@ export async function DELETE(req : NextRequest){
 export async function PUT(req : NextRequest){
   const body = await req.json();
 
-  const {name, description, status, show, iconURL} = body;
+  const {name, description, status, show, iconURL, category} = body;
 
   await prisma.skill.update({
     where : {
@@ -48,7 +49,8 @@ export async function PUT(req : NextRequest){
       description : description,
       status : status,
       show : show,
-      iconURL : iconURL
+      iconURL : iconURL,
+      category : category
     }
   }
   )

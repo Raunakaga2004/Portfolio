@@ -18,6 +18,9 @@ export default function(){
   const desc_ref = useRef<HTMLInputElement>(null);
   const icon_url_ref = useRef<HTMLInputElement>(null);
 
+  const [category, setcategory] = useState<string[]>([]);
+  const category_name_ref = useRef<HTMLInputElement>(null);
+
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
   async function fetchSkills(){
@@ -35,13 +38,12 @@ export default function(){
   const handleAddSkill = async ()=>{
     // add backend endpoint here
 
-    // console.log(show);
-
     await axios.post(`${baseUrl}/api/skill`, {
       name : name_ref.current?.value || "",
       description : desc_ref.current?.value || "",
       status : status,
       show : show,
+      category : category,
       iconURL : icon_url_ref.current?.value || ""
     }).then(()=>{
       fetchSkills();
@@ -49,7 +51,7 @@ export default function(){
       setopen(false);
     }).catch((e)=> console.log(e));
 
-
+    setcategory([]);
     setStatus("NOT_STARTED");
     setShow(false);
   }
@@ -88,9 +90,30 @@ export default function(){
           <input type="text" ref={icon_url_ref}/>
         </div>
 
-        <button onClick={()=>handleAddSkill()}>Add Skill</button>
+        <div>
+          <label>Category : </label>
+          <input ref={category_name_ref}/>
+          <button onClick={()=>{
+            if(category_name_ref.current)
+              setcategory([...category, category_name_ref.current?.value])
+          }}>+</button>
+          {category.map((cat, index)=>{
+            return <div key={index} onClick={()=>{
+              setcategory(category.filter((_,id)=>id !== index));
+            }}>
+              {cat}
+            </div>
+          })}
+        </div>
 
-        <button onClick={()=> setopen(false)}>Close</button>
+        <button onClick={()=>{
+          handleAddSkill()
+        }}>Add Skill</button>
+
+        <button onClick={()=> {
+          setcategory([]);
+          setopen(false)
+        }}>Close</button>
       </div>
     </div>}
 

@@ -22,6 +22,9 @@ export default function(){
   const [tech_stack, settechstack] = useState<string[]>([]);
   const tech_name_ref = useRef<HTMLInputElement>(null);
 
+  const live_link_ref = useRef<HTMLInputElement>(null);
+  const github_link_ref = useRef<HTMLInputElement>(null);
+
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
   async function fetchProjects(){
@@ -49,6 +52,8 @@ export default function(){
       project_video_URL : video_url_ref.current?.value,
       status : status,
       show : show,
+      live_link : live_link_ref.current?.value,
+      github_link : github_link_ref.current?.value
     }).then(()=>{
       fetchProjects();
       alert("Project added successfully!")
@@ -114,6 +119,16 @@ export default function(){
         <div>
           <label>Show : </label>
           <input type="checkbox" onChange={()=>setShow(!show)}/>
+        </div>
+
+        <div>
+          <label>Live Link : </label>
+          <input type="text" ref={live_link_ref}/>
+        </div>
+
+        <div>
+          <label>Github Link : </label>
+          <input type="text" ref={github_link_ref}/>
         </div>
 
         <button onClick={()=>handleAddProject()}>Add Project</button>

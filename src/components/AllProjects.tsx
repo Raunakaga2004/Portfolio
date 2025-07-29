@@ -7,9 +7,11 @@ type ProjectType = {
   description :string,
   tech_stack_used : string[],
   project_image_URL? : string,
-  video_image_URL? : string,
+  project_video_URL? : string,
   status : string,
   show : boolean,
+  live_link? : string,
+  github_link? : string
 }
 
 export default function({projects, fetchProjects} : {
@@ -29,19 +31,13 @@ export default function({projects, fetchProjects} : {
   const [status, setStatus] = useState("NOT_STARTED");
   const [show, setShow] = useState(false);
 
+  const [live_link, setlivelink] = useState("");
+  const [github_link, setgithublink] = useState("");
+
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
   
   return <div>
-    {projects.map((project : {
-      id : string
-      title : string,
-      description : string,
-      tech_stack_used : string[],
-      project_image_URL? : string,
-      project_video_URL? : string,
-      status : string,
-      show : boolean,
-    }) => {
+    {projects.map((project : ProjectType) => {
 
       const handleUpdateProject = async ()=>{
         // add backend endpoint here
@@ -57,6 +53,8 @@ export default function({projects, fetchProjects} : {
           project_video_URL : video_url,
           status : status,
           show : show,
+          live_link : live_link,
+          github_link : github_link
         }).then(()=>{
           alert("Project Updated successfully!")
           setOpen(false);
@@ -84,6 +82,9 @@ export default function({projects, fetchProjects} : {
         setvideo_url(project.project_video_URL || "");
         setStatus(project.status);
         setShow(project.show);
+
+        setlivelink(project.live_link || "");
+        setgithublink(project.github_link || "");
 
         setOpen(true);
       }
@@ -144,6 +145,15 @@ export default function({projects, fetchProjects} : {
               <input type="checkbox" onChange={()=>setShow(!show)} checked={show}/>
             </div>
 
+            <div>
+              <label>Live Link : </label>
+              <input type="text" onChange={(e)=>setlivelink(e.target.value)}/>
+            </div>
+
+            <div>
+              <label>Github Link : </label>
+              <input type="text" onChange={(e)=>setgithublink(e.target.value)}/>
+            </div>
 
             <button onClick={()=>handleUpdateProject()}>Update Project</button>
 
@@ -159,6 +169,9 @@ export default function({projects, fetchProjects} : {
         })}
         <div> {project.status} </div>
         <div> {"show : "}{project.show ? "✅" : "❌"} </div>
+
+        <div> {project.live_link} </div>
+        <div> {project.github_link} </div>
 
         <button onClick={handleDelete}>delete</button>
         <button onClick={handleUpdateWindow}>update</button>
