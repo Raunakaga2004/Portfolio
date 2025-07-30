@@ -7,6 +7,19 @@
   --color-backgroundcolor : #16161A;
 }
 
+body {
+  -webkit-font-smoothing: antialiased; /* For WebKit browsers (Chrome, Safari) */
+  -moz-osx-font-smoothing: grayscale; /* For Firefox on macOS */
+  /* font-smoothing: antialiased; Non-standard but can sometimes help */
+}
+
+/* .highlight {
+  background-color: var(--color-secondary);
+  color : var(--color-primary);
+  box-shadow: 5px 0 0 var(--color-secondary), -5px 0 0 var(--color-secondary);
+} */
+
+/* for removing scoll bar */
 /* 
 :root {
   --background: #ffffff;
