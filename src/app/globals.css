@@ -5,6 +5,11 @@
   --color-secondary: #D1D1E9;
   --color-fortext: #FFFFFF;
   --color-backgroundcolor : #16161A;
+  
+  --breakpoint-lg : 1024px;
+  --breakpoint-md : 768px;
+  --breakpoint-sm : 360px;
+  --breakpoint-xs : 320px;
 }
 
 body {
