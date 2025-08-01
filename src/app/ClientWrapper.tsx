@@ -168,15 +168,16 @@ export default function Home(){
           start : 'top bottom',
           end : 'bottom bottom',
           scrub : true,
+          markers : true,
           snap : {
-              snapTo : 1,
-              duration : {
-                min : 0.4,
-                max : 0.6,
-              },
-              directional : true,
-              ease : 'power1.inOut',
-            }
+            snapTo : 1,
+            duration : {
+              min : 0.4,
+              max : 0.6,
+            },
+            directional : true,
+            ease : 'power1.inOut',
+          }
         }
       })
       .to('#offer-div-left', {
@@ -383,13 +384,13 @@ export default function Home(){
         </div>
       </div>
 
-      <div id="skill-parent" className="page-section text-white flex flex-col justify-center items-center gap-10 h-fit">
+      <div id="skill-parent" className="page-section text-white flex flex-col justify-center items-center md:gap-10 xs:gap-4 xs:h-fit md:h-screen">
         
         {/* Heading */}
-        <div className="md:text-[50px] text-[30px] ">What I bring to the table</div>
+        <div className="md:text-[50px] text-[30px] md:mt-[0px] xs:mt-[60px] px-6 text-center">What I Bring To The Table</div>
 
         {/* content (temporary hard-coded) */}
-        <div className="flex md:flex-row flex-col md:max-h-[70vh] xs:max-h-[80vh]">
+        <div className="flex md:flex-row flex-col md:max-h-[70vh] xs:max-h-[80vh] xs:p-8 md:p-0">
           <div className="flex flex-col flex-wrap gap-4">
             <div className="skill-box md:max-w-[30vw]">
               <div className="lg:text-[30px] xs:text-[16px]">Problem Solving & DSA</div>
@@ -453,10 +454,41 @@ export default function Home(){
               </div>
             </div>
           </div>
-        
         </div>
 
         {/* also show leetcode profile in a window maybe */}
+      </div>
+      <div className="h-screen page-section xs:mt-[40vh] md:mt-[0vh] text-white">
+        <div>What I Have Built</div>
+
+        <div>
+          <div>
+            <div>Locked In</div>
+          </div>
+
+          <div>
+            <div>Portfolio</div>
+            {/* line explaining project */}
+            <div></div>
+            {/* links */}
+          </div>
+
+          <div>
+            <div>Compile Storm</div>
+          </div>
+
+          <div>
+            <div>PomoFocus</div>
+          </div>
+
+          <div>
+            <div>Sudoku Game</div>
+          </div>
+
+          <div>
+            <div>Advance Task Managing</div>
+          </div>
+        </div>
       </div>
 
       {/* <div className="page-section h-screen text-white">
