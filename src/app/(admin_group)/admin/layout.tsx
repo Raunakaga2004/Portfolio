@@ -6,7 +6,7 @@ import NavLink from "@/components/NavLink"
 import { signOut } from "next-auth/react"
 
 export default function({children} : {children : React.ReactElement}){
-  return <div>
+  return <div className='text-white'>
     <div className='w-screen flex flex-row justify-around'>
       <Logo/>
 

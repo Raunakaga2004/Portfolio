@@ -30,13 +30,22 @@ enum Status{
 
 // skills table 
 model Skill {
-  id        String   @id @default(cuid())
-  name String @unique
-  description String? 
-  status Status @default(NOT_STARTED)
-  show Boolean @default(false) //to show on main portfolio or not
-  iconURL String? // for skills icon grid
-  category String[]
+  id          String            @id @default(cuid())
+  name        String            @unique
+  description String?
+  status      Status            @default(NOT_STARTED)
+  show        Boolean           @default(false)
+  iconURL     String?
+  // This is the relation field for the many-to-many
+  categories  SkillCategories[] @relation("SkillToCategory")
+}
+
+model SkillCategories {
+  id          String            @id @default(cuid())
+  name        String            @unique
+  description String?
+  // Add the corresponding relation field
+  skills      Skill[]           @relation("SkillToCategory")
 }
 
 // project table

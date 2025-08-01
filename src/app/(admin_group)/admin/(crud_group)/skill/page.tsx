@@ -18,7 +18,7 @@ export default function(){
   const desc_ref = useRef<HTMLInputElement>(null);
   const icon_url_ref = useRef<HTMLInputElement>(null);
 
-  const [category, setcategory] = useState<string[]>([]);
+  const [categories, setcategories] = useState<string[]>([]);
   const category_name_ref = useRef<HTMLInputElement>(null);
 
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
@@ -43,7 +43,7 @@ export default function(){
       description : desc_ref.current?.value || "",
       status : status,
       show : show,
-      category : category,
+      categories : categories,
       iconURL : icon_url_ref.current?.value || ""
     }).then(()=>{
       fetchSkills();
@@ -51,7 +51,7 @@ export default function(){
       setopen(false);
     }).catch((e)=> console.log(e));
 
-    setcategory([]);
+    setcategories([]);
     setStatus("NOT_STARTED");
     setShow(false);
   }
@@ -91,15 +91,15 @@ export default function(){
         </div>
 
         <div>
-          <label>Category : </label>
+          <label>Categories : </label>
           <input ref={category_name_ref}/>
           <button onClick={()=>{
             if(category_name_ref.current)
-              setcategory([...category, category_name_ref.current?.value])
+              setcategories([...categories, category_name_ref.current?.value])
           }}>+</button>
-          {category.map((cat, index)=>{
+          {categories.map((cat, index)=>{
             return <div key={index} onClick={()=>{
-              setcategory(category.filter((_,id)=>id !== index));
+              setcategories(categories.filter((_,id)=>id !== index));
             }}>
               {cat}
             </div>
@@ -111,7 +111,7 @@ export default function(){
         }}>Add Skill</button>
 
         <button onClick={()=> {
-          setcategory([]);
+          setcategories([]);
           setopen(false)
         }}>Close</button>
       </div>
