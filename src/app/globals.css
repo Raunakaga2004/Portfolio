@@ -12,6 +12,40 @@
   --breakpoint-xs : 320px;
 }
 
+/* For Webkit browsers (Chrome, Safari) */
+.hide-scrollbar::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    background: transparent; /* Makes the scrollbar track transparent */
+}
+
+/* For Firefox */
+.hide-scrollbar {
+    scrollbar-width: none; /* Hide scrollbar for Firefox */
+}
+
+/* For Internet Explorer and Edge */
+.hide-scrollbar {
+    -ms-overflow-style: none; /* Hide scrollbar for IE and Edge */
+}
+
+.skill-box {
+  display : flex;
+  flex-direction : column;
+  padding: 2vh 2vh;
+  border: 3px solid var(--color-primary);
+  border-radius: 10px;
+  /* border-color: var(--color-primary); */
+}
+
+.skill-box-content{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin-top: 5px;
+  gap: 5px;
+}
+
 body {
   -webkit-font-smoothing: antialiased; /* For WebKit browsers (Chrome, Safari) */
   -moz-osx-font-smoothing: grayscale; /* For Firefox on macOS */

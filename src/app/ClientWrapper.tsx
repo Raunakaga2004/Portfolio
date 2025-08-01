@@ -8,7 +8,7 @@ import { poppins } from "./layout";
 
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { ScrollTrigger, SplitText } from "gsap/all";
+import { ScrollSmoother, ScrollTrigger, SplitText } from "gsap/all";
 
 import { useRef } from "react";
 // import { skillsType } from "./page";
@@ -31,7 +31,7 @@ export default function Home(){
 
   // scoll animation and snap
   useGSAP(()=>{
-    gsap.registerPlugin(ScrollTrigger);
+    gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
 
     const containerElement = scrollPageRef.current;
 
@@ -54,23 +54,24 @@ export default function Home(){
         console.warn("section is not a HTML element!");
       }
 
-      ScrollTrigger.create({
-        trigger : section,
-        markers : true,
-        start : 'top top',
-        scroller : containerElement,
-        snap : {
+      // ScrollTrigger.create({
+      //   trigger : section,
+      //   markers : true,
+      //   start : 'top top',
+      //   end : '100% bottom',
+      //   scroller : containerElement,
+      //   snap : {
           
-          // delay : 0.5,
-          snapTo : 1,
-          duration : {
-            min : 0.4,
-            max : 1,
-          },
-          directional : true,
-          ease : 'power1.inOut',
-        }
-      })
+      //     // delay : 0.5,
+      //     snapTo : 1,
+      //     duration : {
+      //       min : 0.4,
+      //       max : 1,
+      //     },
+      //     directional : true,
+      //     ease : 'power1.inOut',
+      //   }
+      // })
 
     let mm = gsap.matchMedia();
     
@@ -89,6 +90,7 @@ export default function Home(){
           top : isLaptop ? -350  : -80,
           left : isLaptop ? -300 : -140,
           zIndex : 10,
+          smooth : true,
           scrollTrigger : {
             trigger : section,
             scroller : containerElement,
@@ -107,6 +109,7 @@ export default function Home(){
         })
         gsap.to(".intro-page-content", {
           filter : 'blur(10px)',
+          smooth : true,
           scrollTrigger : {
             trigger : section,
             scroller : containerElement,
@@ -125,12 +128,22 @@ export default function Home(){
         })
 
         gsap.timeline({
+          smooth : true,
           scrollTrigger : {
             trigger : '#offer-parent',
             scroller : containerElement,
             start : '30% bottom',
             end : 'bottom bottom',
             scrub : true,
+            // snap : {
+            //   snapTo : 1,
+            //   duration : {
+            //     min : 0.4,
+            //     max : 0.6,
+            //   },
+            //   directional : true,
+            //   ease : 'power1.inOut',
+            // }
           }
         })
         .to('#offer-heading', {
@@ -148,12 +161,22 @@ export default function Home(){
       }
 
       gsap.timeline({
+        smooth : true,
         scrollTrigger : {
           trigger : '#skill-parent',
           scroller : containerElement,
           start : 'top bottom',
           end : 'bottom bottom',
           scrub : true,
+          snap : {
+              snapTo : 1,
+              duration : {
+                min : 0.4,
+                max : 0.6,
+              },
+              directional : true,
+              ease : 'power1.inOut',
+            }
         }
       })
       .to('#offer-div-left', {
@@ -282,7 +305,7 @@ export default function Home(){
   })
 
   return (
-    <div className={`${poppins.className} relative h-screen w-screen overflow-x-hidden overflow-y-hidden`} ref={scrollPageRef}>
+    <div className={`${poppins.className} relative h-screen w-screen overflow-x-hidden overflow-y-hidden hide-scrollbar`} ref={scrollPageRef}>
       {/* intro section */}
       <div className="h-screen page-section" ref={containerRef}>
 
@@ -360,8 +383,98 @@ export default function Home(){
         </div>
       </div>
 
-      <div id="skill-parent" className="page-section h-screen text-white">
-        {/* {[...allSkills.entries()].map(([key, value]) => (
+      <div id="skill-parent" className="page-section text-white flex flex-col justify-center items-center gap-10 h-fit">
+        
+        {/* Heading */}
+        <div className="md:text-[50px] text-[30px] ">What I bring to the table</div>
+
+        {/* content (temporary hard-coded) */}
+        <div className="flex md:flex-row flex-col md:max-h-[70vh] xs:max-h-[80vh]">
+          <div className="flex flex-col flex-wrap gap-4">
+            <div className="skill-box md:max-w-[30vw]">
+              <div className="lg:text-[30px] xs:text-[16px]">Problem Solving & DSA</div>
+              <div  className="skill-box-content">
+                <div className="bg-[var(--color-primary)] py-2 px-4 rounded-4xl lg:text-[16px] text-[12px]">Leetcode : 450+ Questions</div>
+              </div>
+            </div>
+
+            <div className="skill-box md:max-w-[30vw]">
+              <div className="lg:text-[30px] xs:text-[16px]" >Languages</div>
+              <div  className="skill-box-content">
+                <div className="bg-[var(--color-primary)] py-2 px-4 rounded-4xl lg:text-[16px] text-[12px]">JavaScript</div>
+                <div className="bg-[var(--color-primary)] py-2 px-4 rounded-4xl lg:text-[16px] text-[12px]">TypeScript</div>
+                <div className="bg-[var(--color-primary)] py-2 px-4 rounded-4xl lg:text-[16px] text-[12px]">Java</div>
+                <div className="bg-[var(--color-primary)] py-2 px-4 rounded-4xl lg:text-[16px] text-[12px]">Python</div>
+              </div>
+            </div>
+
+            <div className="skill-box md:max-w-[30vw]">
+              <div className="lg:text-[30px] xs:text-[16px]]">Frontend</div>
+              <div className="skill-box-content">
+                <div className="bg-[var(--color-primary)] py-2 px-4 rounded-4xl lg:text-[16px] text-[12px]">React.js</div>
+                <div className="bg-[var(--color-primary)] py-2 px-4 rounded-4xl lg:text-[16px] text-[12px]">Next.js</div>
+                <div className="bg-[var(--color-primary)] py-2 px-4 rounded-4xl lg:text-[16px] text-[12px]">TailwindCSS</div>
+                <div className="bg-[var(--color-primary)] py-2 px-4 rounded-4xl lg:text-[16px] text-[12px]">GSAP</div>
+                <div className="bg-[var(--color-primary)] py-2 px-4 rounded-4xl lg:text-[16px] text-[12px]">Figma</div>
+              </div>
+            </div>
+
+            <div className="skill-box md:max-w-[30vw]">
+              <div className="lg:text-[30px] xs:text-[16px]">Backend</div>
+              <div  className="skill-box-content">
+                <div className="bg-[var(--color-primary)] py-2 px-4 rounded-4xl lg:text-[16px] text-[12px]">Node.js</div>
+                <div className="bg-[var(--color-primary)] py-2 px-4 rounded-4xl lg:text-[16px] text-[12px]">Next.js</div>
+                <div className="bg-[var(--color-primary)] py-2 px-4 rounded-4xl lg:text-[16px] text-[12px]">Web Sockets</div>
+              </div>
+            </div>
+
+            <div className="skill-box md:max-w-[30vw]">
+              <div className="lg:text-[30px] xs:text-[16px]">Database</div>
+              <div  className="skill-box-content">
+                <div className="bg-[var(--color-primary)] py-2 px-4 rounded-4xl lg:text-[16px] text-[12px]">PostgreSQL</div>
+                <div className="bg-[var(--color-primary)] py-2 px-4 rounded-4xl lg:text-[16px] text-[12px]">MongoDB</div>
+              </div>
+            </div>
+
+            <div className="skill-box md:max-w-[30vw]">
+              <div className="lg:text-[30px] xs:text-[16px]">Machine Learning</div>
+              <div  className="skill-box-content">
+                <div className="bg-[var(--color-primary)] py-2 px-4 rounded-4xl lg:text-[16px] text-[12px]">EDA (Exploratory Data Analysis)</div>
+                <div className="bg-[var(--color-primary)] py-2 px-4 rounded-4xl lg:text-[16px] text-[12px]">SQL</div>
+                <div className="bg-[var(--color-primary)] py-2 px-4 rounded-4xl lg:text-[16px] text-[12px]">Supervised Learning</div>
+                <div className="bg-[var(--color-primary)] py-2 px-4 rounded-4xl lg:text-[16px] text-[12px]">Unsupervised Learning</div>
+              </div>
+            </div>
+
+            <div className="skill-box lg:max-w-[30vw]">
+              <div className="lg:text-[30px] xs:text-[16px]">Version Control</div>
+              <div  className="skill-box-content">
+                <div className="bg-[var(--color-primary)] py-2 px-4 rounded-4xl lg:text-[16px] text-[12px]">Git & Github</div>
+              </div>
+            </div>
+          </div>
+        
+        </div>
+
+        {/* also show leetcode profile in a window maybe */}
+      </div>
+
+      {/* <div className="page-section h-screen text-white">
+        projects section
+      </div>
+
+      <div className="page-section h-screen text-white">
+        contact section
+      </div>
+
+      <div className="page-section h-screen text-white">
+        footer section
+      </div> */}
+    </div>
+  );
+}
+
+{/* {[...allSkills.entries()].map(([key, value]) => (
           <div key={key}>
             <div>{key}</div>
             {value.map((skill)=> (
@@ -371,22 +484,3 @@ export default function Home(){
             ))}
           </div>
         ))} */}
-        {/* also show leetcode profile in a window maybe */}
-      </div>
-
-      <div className="page-section h-screen text-white">
-        projects section
-
-        {/* add view more button to load more */}
-      </div>
-
-      <div className="page-section h-screen text-white">
-        contact section
-      </div>
-
-      <div className="page-section h-screen text-white">
-        footer section
-      </div>
-    </div>
-  );
-}
