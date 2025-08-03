@@ -1,4 +1,4 @@
-import { qwigley } from "@/app/layout";
+import { qwigley } from "@/utils/font";
 
 
 export default function Logo(){

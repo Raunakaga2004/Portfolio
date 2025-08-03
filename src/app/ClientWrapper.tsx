@@ -4,8 +4,8 @@ import Github from "@/components/icons/Github";
 // main portfolio website 
 
 // import Logo from "@/components/Logo";
-import { qwigley } from "./layout";
-import { poppins } from "./layout";
+import { qwigley } from "../utils/font";
+import { poppins } from "../utils/font";
 
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
