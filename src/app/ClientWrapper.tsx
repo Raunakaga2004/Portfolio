@@ -601,7 +601,7 @@ export default function Home(){
               Ready to connect? Just scroll down — I’d be glad to hear from you. <br/><br/>
             </div>
 
-            <a href="mailto:raunakaga12@gmail.com" target="_blank" className="md:translate-x-[300px] border text-[20px] border-[var(--color-primary)] px-6 py-1 rounded-xl text-center hover:bg-[var(--color-secondary)] hover:border-[var(--color-secondary)] hover:text-[var(--color-primary)] hover:font-semibold mx-2">
+            <a href="mailto:raunakaga12@gmail.com" target="_blank" className="md:translate-x-[300px] border text-[20px] border-[var(--color-primary)] px-6 py-1 rounded-xl text-center hover:bg-[var(--color-secondary)] hover:border-[var(--color-secondary)] hover:text-[var(--color-primary)] hover:font-semibold xs:mx-2 md:mx-0">
               <button>Hire Me</button>
             </a>
           </div>
@@ -612,7 +612,7 @@ export default function Home(){
 
         </div>
 
-        <div className="bg-[var(--color-projectDiv)] w-screen h-full py-2 text-center text-[var(--color-primary)] mt-10">Built By <div className="text-white">Raunak Agarwal</div></div>
+        <div className="bg-[var(--color-projectDiv)] w-screen h-fit py-2 text-center text-[var(--color-primary)] xs:mt-10 md:mt-0">Built By <div className="text-white text-[20px]">Raunak Agarwal</div></div>
       </div>
 
       {/* <div className="page-section text-white h-fit">
