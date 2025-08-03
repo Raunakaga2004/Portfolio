@@ -346,7 +346,9 @@ export default function Home(){
             <a href="/resume/RaunakResume-2.pdf" download="RaunakResume.pdf">
             <button className="lg:text-[20px] sm:text-[16px] xs:text-[12px] border md:hover:bg-secondary px-6 py-1 rounded-md md:hover:text-primary md:hover:font-semibold md:hover:border-secondary">Resume</button>
             </a>
+            <a href="#work">
             <button className="lg:text-[20px] sm:text-[16px] xs:text-[12px] border md:hover:bg-secondary px-6 py-1 rounded-md md:hover:text-primary md:hover:font-semibold md:hover:border-secondary">View My Work</button>
+            </a>
           </div>
         </div>
         
@@ -470,7 +472,7 @@ export default function Home(){
 
         {/* also show leetcode profile in a window maybe */}
       </div>
-      <div className="h-fit page-section xs:mt-[40vh] md:mt-[10vh] text-white flex flex-col gap-10">
+      <div id="work" className="h-fit page-section xs:mt-[40vh] md:mt-[10vh] text-white flex flex-col gap-10">
         <div className="md:text-[50px] text-[30px] md:mt-[0px] xs:mt-[60px] px-6 text-center">What I Have Built</div>
 
         <div className="flex flex-col justify-center items-center gap-5">
@@ -583,25 +585,34 @@ export default function Home(){
         </div>
       </div>
 
-      <div className="page-section text-white h-screen flex flex-col justify-center items-center px-[10vw] xs:mt-[30vh] md:mt-[10vh]">
+      <div className="page-section text-white h-fit flex flex-col justify-center items-center px-[10vw] xs:mt-[30vh] md:mt-[10vh]">
         {/* about me page */}
         <div className="md:text-[50px] text-[30px] px-6 text-center">About Me</div>
         
         <div className=" flex md:flex-row flex-col-reverse justify-center items-center">
-          <div className="bg-[var(--color-primary)] md:w-[30vw] md:translate-x-[300px] z-0 p-[30px] px-[50px] rounded-lg">
-            Hey, I'm Raunak — a full-stack developer passionate about building tools that boost productivity and solve real problems. <br/> <br/>
+          <div className="flex flex-col justify-center items-start gap-4">
+            <div className="bg-[var(--color-primary)] md:w-[30vw] md:translate-x-[300px] z-0 p-[30px] px-[50px] rounded-lg">
+               Hey, I'm Raunak — a full-stack developer passionate about building tools that boost productivity and solve real problems. <br/> <br/>
 
-            My journey began with a curiosity for how things work under the hood, which led me to explore everything from Java and web development to machine learning and system design. I enjoy taking on challenges that require both creative problem-solving and solid engineering. <br/> <br/> 
+              My journey began with a curiosity for how things work under the hood, which led me to explore everything from Java and web development to machine learning and system design. I enjoy taking on challenges that require both creative problem-solving and solid engineering. <br/> <br/> 
 
-            When I'm not coding, you'll probably find me working out, reading about brilliant minds like Turing or Ramanujan, or refining side projects that keep me sharp. <br/> <br/>
+              When I'm not coding, you'll probably find me working out, reading about brilliant minds like Turing or Ramanujan, or refining side projects that keep me sharp. <br/> <br/>
 
-            Ready to connect? Just scroll down — I’d be glad to hear from you. 
+              Ready to connect? Just scroll down — I’d be glad to hear from you. <br/><br/>
+            </div>
+
+            <a href="mailto:raunakaga12@gmail.com" target="_blank" className="md:translate-x-[300px] border text-[20px] border-[var(--color-primary)] px-6 py-1 rounded-xl text-center hover:bg-[var(--color-secondary)] hover:border-[var(--color-secondary)] hover:text-[var(--color-primary)] hover:font-semibold mx-2">
+              <button>Hire Me</button>
+            </a>
           </div>
 
           <div className="z-1">
             <img id="intro_image" src={"/image/whoami.png"} className=" overflow-x-hidden md:max-w-[800px] xs:max-w-[400px]"/>
           </div>
+
         </div>
+
+        <div className="bg-[var(--color-projectDiv)] w-screen h-full py-2 text-center text-[var(--color-primary)] mt-10">Built By <div className="text-white">Raunak Agarwal</div></div>
       </div>
 
       {/* <div className="page-section text-white h-fit">
