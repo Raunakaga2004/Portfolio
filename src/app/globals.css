@@ -5,6 +5,7 @@
   --color-secondary: #D1D1E9;
   --color-fortext: #FFFFFF;
   --color-backgroundcolor : #16161A;
+  --color-projectDiv : #303035;
   
   --breakpoint-lg : 1024px;
   --breakpoint-md : 768px;
@@ -45,6 +46,17 @@
   margin-top: 5px;
   gap: 5px;
 }
+
+.projectDiv {
+  background-color: var(--color-projectDiv);
+  padding: 15px;
+  border-radius: 15px;
+  /* width: 50vw; */
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 
 body {
   -webkit-font-smoothing: antialiased; /* For WebKit browsers (Chrome, Safari) */

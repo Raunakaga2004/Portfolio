@@ -1,5 +1,6 @@
 "use client";
 
+import Github from "@/components/icons/Github";
 // main portfolio website 
 
 // import Logo from "@/components/Logo";
@@ -11,6 +12,7 @@ import gsap from "gsap";
 import { ScrollSmoother, ScrollTrigger, SplitText } from "gsap/all";
 
 import { useRef } from "react";
+import Live from "@/components/icons/Live";
 // import { skillsType } from "./page";
 
 gsap.registerPlugin(ScrollTrigger, SplitText)
@@ -305,6 +307,16 @@ export default function Home(){
     scope : containerRef // scope helps to guardrail that uninted animations don't occur (although we don't need it as we are using selectors for each animation)
   })
 
+
+  const projectTechStack = {
+    lockedIn : ['React', 'TypeScript', 'Zod', 'JWT', 'Node.js', 'Express', 'Prisma', 'PostgreSQL', 'TailwindCSS'],
+    portfolio : ['Next.js', 'TypeScript', 'NextAuth', 'Node.js', 'TailwindCSS'],
+    sudokuGame : ['Core JAVA', 'Backtracking', 'Recursion', 'Stack'],
+    taskManging : ['Core JAVA', 'Nested Linked List', 'ArrayList'],
+    compileStorm : ['React', 'JavaScript', 'Zod', 'JWT', 'Node.js', 'Express', 'Mongoose', 'MongoDB', 'TailwindCSS', 'Monaco Editor'],
+    pomofocus : ['React', 'TailwindCSS']
+  }
+
   return (
     <div className={`${poppins.className} relative h-screen w-screen overflow-x-hidden overflow-y-hidden hide-scrollbar`} ref={scrollPageRef}>
       {/* intro section */}
@@ -458,89 +470,146 @@ export default function Home(){
 
         {/* also show leetcode profile in a window maybe */}
       </div>
-      <div className="h-screen page-section xs:mt-[40vh] md:mt-[0vh] text-white">
-        <div>What I Have Built</div>
+      <div className="h-fit page-section xs:mt-[40vh] md:mt-[10vh] text-white flex flex-col gap-10">
+        <div className="md:text-[50px] text-[30px] md:mt-[0px] xs:mt-[60px] px-6 text-center">What I Have Built</div>
 
-        <div>
-          <div>
-            <div>Locked In</div>
-            <div>
+        <div className="flex flex-col justify-center items-center gap-5">
+          <div className="projectDiv md:w-[50vw] max-w-[80vw]">
+            <div className="text-[25px]">Locked In</div>
+            <div className="text-[14px]">
               Locked In is a productivity web app that helps you stay focused and track your habits, tasks, and progress all in one place.
             </div>
-            <div>
-              {/* tech stack */}
+            <div className="flex flex-wrap gap-1">
+              {projectTechStack.lockedIn.map((tech)=>{
+                return <div key={tech} className="bg-[var(--color-primary)] py-2 px-4 rounded-4xl text-[12px]">
+                  {tech}
+                </div>
+              })}
             </div>
-            <div>
-              {/* links */}
+            <div className="text-[12px] flex gap-1">
+              <a href="https://github.com/Raunakaga2004/LockedIn" className="flex flex-row items-center gap-1 mt-4 hover:border-[var(--color-primary)] px-2 py-1 rounded-4xl w-fit border border-[var(--color-projectDiv)]"><Github/> GitHub</a>
             </div>
           </div>
 
-          <div>
-            <div>Portfolio</div>
-            <div>
+          <div  className="projectDiv md:w-[50vw] max-w-[80vw]">
+            <div className="text-[25px]">Portfolio</div>
+            <div className="text-[14px]">
               It is a personal website that showcases my work, skills, and projects, with a private admin panel to update content and track performance.
             </div>
-            <div>
-              {/* tech stack */}
+            <div className="flex flex-wrap gap-1">
+              {projectTechStack.portfolio.map((tech)=>{
+                return <div key={tech} className="bg-[var(--color-primary)] py-2 px-4 rounded-4xl text-[12px]">
+                  {tech}
+                </div>
+              })}
             </div>
-            <div>
-              {/* links */}
+            <div className="text-[12px] flex gap-1">
+              <a href="https://github.com/Raunakaga2004/Portfolio" className="flex flex-row items-center gap-1 mt-4 hover:border-[var(--color-primary)] px-2 py-1 rounded-4xl w-fit border border-[var(--color-projectDiv)]"><Github/> GitHub</a>
             </div>
           </div>
 
-          <div>
-            <div>Sudoku Game</div>
-            <div>
+          <div  className="projectDiv md:w-[50vw] max-w-[80vw]">
+            <div className="text-[25px]">Sudoku Game</div>
+            <div className="text-[14px]">
               It is a console-based game that lets users play Sudoku at different difficulty levels, use pencil marks, and view solutions.
             </div>
-            <div>
-              {/* tech stack */}
+            <div className="flex flex-wrap gap-1">
+              {projectTechStack.sudokuGame.map((tech)=>{
+                return <div key={tech} className="bg-[var(--color-primary)] py-2 px-4 rounded-4xl text-[12px]">
+                  {tech}
+                </div>
+              })}
             </div>
-            <div>
-              {/* links */}
+            <div className="text-[12px] flex gap-1">
+              <a href="https://github.com/Raunakaga2004/Sudoku-Game" className="flex flex-row items-center gap-1 mt-4 hover:border-[var(--color-primary)] px-2 py-1 rounded-4xl w-fit border border-[var(--color-projectDiv)]"><Github/> GitHub</a>
             </div>
           </div>
 
-          <div>
-            <div>Advance Task Managing</div>
-            <div>
+          <div className="projectDiv md:w-[50vw] max-w-[80vw]">
+            <div className="text-[25px]">Advance Task Managing</div>
+            <div className="text-[14px]">
               It is a console-based app that lets users manage complex tasks with unlimited nested subtasks using a linked list structure.
             </div>
-            <div>
-              {/* tech stack */}
+            <div className="flex flex-wrap gap-1">
+              {projectTechStack.taskManging.map((tech)=>{
+                return <div key={tech} className="bg-[var(--color-primary)] py-2 px-4 rounded-4xl text-[12px]">
+                  {tech}
+                </div>
+              })}
             </div>
-            <div>
-              {/* links */}
+            <div className="text-[12px] flex gap-1">
+              <a href="https://github.com/Raunakaga2004/to-do-list-with-subtasks-features" className="flex flex-row items-center gap-1 mt-4 hover:border-[var(--color-primary)] px-2 py-1 rounded-4xl w-fit border border-[var(--color-projectDiv)]"><Github/> GitHub</a>
             </div>
           </div>
 
-          <div>
-            <div>Compile Storm</div>
-            <div>
+          <div className="projectDiv hover-area md:w-[50vw] max-w-[80vw]">
+            <div className="text-[25px]">Compile Storm</div>
+            <div className="text-[14px]">
               Compile Storm is an online code editor that lets you write, run, and test code in multiple programming languages like Java, C, C++, and Python all in one place.
             </div>
-            <div>
-              {/* tech stack */}
+           <div className="flex flex-wrap gap-1">
+              {projectTechStack.compileStorm.map((tech)=>{
+                return <div key={tech} className="bg-[var(--color-primary)] py-2 px-4 rounded-4xl text-[12px]">
+                  {tech}
+                </div>
+              })}
             </div>
-            <div>
-              {/* links */}
+            <div className="text-[12px] flex gap-1">
+              <a href="https://github.com/Raunakaga2004/CompileStorm" className="flex flex-row items-center gap-1 mt-4 hover:border-[var(--color-primary)] px-2 py-1 rounded-4xl w-fit border border-[var(--color-projectDiv)]"><Github/> GitHub</a>
+
+              <a href="https://compilestorm-frontend.netlify.app/" className="flex flex-row items-center gap-1 mt-4 hover:border-[var(--color-primary)] px-2 py-1 rounded-4xl w-fit border border-[var(--color-projectDiv)]"><Live/> Live Link</a>
             </div>
           </div>
+          {/* <img src={"/image/projects/compileStorm.png"} className="hover-image"/> */}
 
-          <div>
-            <div>PomoFocus</div>
-            <div>
+          <div className="projectDiv md:w-[50vw] max-w-[80vw]">
+            <div className="text-[25px]">PomoFocus</div>
+            <div className="text-[14px]">
               It is a simple and minimalist productivity web app based on the Pomodoro technique that helps users stay focused by working in timed sessions with regular breaks.
             </div>
-            <div>
-              {/* tech stack */}
+            <div className="flex flex-wrap gap-1">
+              {projectTechStack.pomofocus.map((tech)=>{
+                return <div key={tech} className="bg-[var(--color-primary)] py-2 px-4 rounded-4xl text-[12px]">
+                  {tech}
+                </div>
+              })}
             </div>
-            <div>
-              {/* links */}
+            <div className="text-[12px] flex gap-1">
+              <a href="https://github.com/Raunakaga2004/PomoFocus" className="flex flex-row items-center gap-1 mt-4 hover:border-[var(--color-primary)] px-2 py-1 rounded-4xl w-fit border border-[var(--color-projectDiv)]"><Github/> GitHub</a>
+
+              <a href="https://pomofocus-vxuz.onrender.com/" className="flex flex-row items-center gap-1 mt-4 hover:border-[var(--color-primary)] px-2 py-1 rounded-4xl w-fit border border-[var(--color-projectDiv)]"><Live/> Live Link</a>
             </div>
           </div>
         </div>
       </div>
+
+      <div className="page-section text-white h-screen flex flex-col justify-center items-center px-[10vw] xs:mt-[30vh] md:mt-[10vh]">
+        {/* about me page */}
+        <div className="md:text-[50px] text-[30px] px-6 text-center">About Me</div>
+        
+        <div className=" flex md:flex-row flex-col-reverse justify-center items-center">
+          <div className="bg-[var(--color-primary)] md:w-[30vw] md:translate-x-[300px] z-0 p-[30px] px-[50px] rounded-lg">
+            Hey, I'm Raunak — a full-stack developer passionate about building tools that boost productivity and solve real problems. <br/> <br/>
+
+            My journey began with a curiosity for how things work under the hood, which led me to explore everything from Java and web development to machine learning and system design. I enjoy taking on challenges that require both creative problem-solving and solid engineering. <br/> <br/> 
+
+            When I'm not coding, you'll probably find me working out, reading about brilliant minds like Turing or Ramanujan, or refining side projects that keep me sharp. <br/> <br/>
+
+            Ready to connect? Just scroll down — I’d be glad to hear from you. 
+          </div>
+
+          <div className="z-1">
+            <img id="intro_image" src={"/image/whoami.png"} className=" overflow-x-hidden md:max-w-[800px] xs:max-w-[400px]"/>
+          </div>
+        </div>
+      </div>
+
+      {/* <div className="page-section text-white h-fit">
+
+        <div>
+          Lets Build Something Together
+        </div>
+      </div> */}
 
       {/* <div className="page-section h-screen text-white">
         projects section
