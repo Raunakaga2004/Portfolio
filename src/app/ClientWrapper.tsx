@@ -464,29 +464,80 @@ export default function Home(){
         <div>
           <div>
             <div>Locked In</div>
+            <div>
+              Locked In is a productivity web app that helps you stay focused and track your habits, tasks, and progress all in one place.
+            </div>
+            <div>
+              {/* tech stack */}
+            </div>
+            <div>
+              {/* links */}
+            </div>
           </div>
 
           <div>
             <div>Portfolio</div>
-            {/* line explaining project */}
-            <div></div>
-            {/* links */}
-          </div>
-
-          <div>
-            <div>Compile Storm</div>
-          </div>
-
-          <div>
-            <div>PomoFocus</div>
+            <div>
+              It is a personal website that showcases my work, skills, and projects, with a private admin panel to update content and track performance.
+            </div>
+            <div>
+              {/* tech stack */}
+            </div>
+            <div>
+              {/* links */}
+            </div>
           </div>
 
           <div>
             <div>Sudoku Game</div>
+            <div>
+              It is a console-based game that lets users play Sudoku at different difficulty levels, use pencil marks, and view solutions.
+            </div>
+            <div>
+              {/* tech stack */}
+            </div>
+            <div>
+              {/* links */}
+            </div>
           </div>
 
           <div>
             <div>Advance Task Managing</div>
+            <div>
+              It is a console-based app that lets users manage complex tasks with unlimited nested subtasks using a linked list structure.
+            </div>
+            <div>
+              {/* tech stack */}
+            </div>
+            <div>
+              {/* links */}
+            </div>
+          </div>
+
+          <div>
+            <div>Compile Storm</div>
+            <div>
+              Compile Storm is an online code editor that lets you write, run, and test code in multiple programming languages like Java, C, C++, and Python all in one place.
+            </div>
+            <div>
+              {/* tech stack */}
+            </div>
+            <div>
+              {/* links */}
+            </div>
+          </div>
+
+          <div>
+            <div>PomoFocus</div>
+            <div>
+              It is a simple and minimalist productivity web app based on the Pomodoro technique that helps users stay focused by working in timed sessions with regular breaks.
+            </div>
+            <div>
+              {/* tech stack */}
+            </div>
+            <div>
+              {/* links */}
+            </div>
           </div>
         </div>
       </div>
