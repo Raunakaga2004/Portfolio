@@ -175,7 +175,7 @@ export default function Home(){
           start : 'top bottom',
           end : 'bottom bottom',
           scrub : true,
-          markers : true,
+          // markers : true,
           snap : {
             snapTo : 1,
             duration : {
