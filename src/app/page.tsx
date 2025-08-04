@@ -1,10 +1,6 @@
 'use server'
 
-//@ts-ignore
 import ClientWrapper from './ClientWrapper'
-import axios from 'axios'
-
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 
 // async function extractSkills(){
 //   try{
@@ -48,7 +44,7 @@ const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 //   category : string[]
 // }
 
-export default async function(){
+export default async function ServerComponent(){
 
 //   const allSkills = await extractSkills();
 

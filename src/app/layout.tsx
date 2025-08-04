@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const metadata: Metadata = {
+export const metadata: Metadata = {
   title: "Raunak's Portfolio",
   description: "",
 };

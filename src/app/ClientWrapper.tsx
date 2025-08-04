@@ -4,8 +4,8 @@ import Github from "@/components/icons/Github";
 // main portfolio website 
 
 // import Logo from "@/components/Logo";
-import { qwigley } from "../utils/font";
-import { poppins } from "../utils/font";
+import { qwigley } from "@/utils/font";
+import { poppins } from "@/utils/font";
 
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
@@ -29,7 +29,7 @@ export default function Home(){
   const scrollPageRef = useRef<HTMLDivElement>(null);
 
   const containerRef = useRef(null); // Ref for the component's container
-  const timelineRef = useRef<any>(null); // Ref to store the timeline instance
+  const timelineRef = useRef<GSAPTimeline | null>(null); // Ref to store the timeline instance
 
   // scoll animation and snap
   useGSAP(()=>{
@@ -75,15 +75,20 @@ export default function Home(){
       //   }
       // })
 
-    let mm = gsap.matchMedia();
+    const mm = gsap.matchMedia();
+
+    // type MyConditions = {
+    //   isLaptop: boolean;
+    //   // isSmallMobile: boolean;
+    // };
     
-    // laptop animation 1024px 
+    //laptop animation 1024px 
     mm.add({
       isLaptop: `(min-width: 1024px)`,
-      isSmallMobile: `(min-width: 320px)`,
+      // isSmallMobile: `(min-width: 320px)`,
       // reduceMotion: "(prefers-reduced-motion: reduce)",
-    },(context : any)=>{
-      let { isLaptop, isSmallMobile} = context.conditions;
+    }, (context: gsap.Context & { conditions? : gsap.Conditions})=>{
+      const isLaptop = context.conditions?.isLaptop;
       
       if(logo && i == 0){
         // set the timeline value of logo first
@@ -210,33 +215,38 @@ export default function Home(){
     })
 
     // media breakpoints
-    let mm = gsap.matchMedia();
+    const mm = gsap.matchMedia();
+
+    // type MyConditions = {
+    //   isLaptop: boolean;
+    //   // isSmallMobile: boolean;
+    // };
     
     //laptop animation 1024px 
     mm.add({
       isLaptop: `(min-width: 1024px)`,
-      isSmallMobile: `(min-width: 320px)`,
+      // isSmallMobile: `(min-width: 320px)`,
       // reduceMotion: "(prefers-reduced-motion: reduce)",
-    },(context : any)=>{
-      let { isLaptop, isSmallMobile} = context.conditions;
+    }, (context: gsap.Context & { conditions? : gsap.Conditions})=>{
+      const isLaptop = context.conditions?.isLaptop;
 
       // 190 px image and oval to the left
-      timelineRef.current.to('#intro_oval_shape', {
+      timelineRef.current?.to('#intro_oval_shape', {
         scale : 1,
         duration : 0.5,
         opacity : 1,
         ease : "power1.inOut"
       }, 0)
 
-      timelineRef.current.to('#intro_oval_shape', {
+      timelineRef.current?.to('#intro_oval_shape', {
         scale : 0.8,
-        x : isLaptop && "-190px",
+        x : isLaptop ? "-190px" : "",
         duration : 0.5,
         delay : 0.1,
         ease : "power1.inOut"
       }, 1)
 
-      timelineRef.current.to('#logo_name', {
+      timelineRef.current?.to('#logo_name', {
         scale : (isLaptop ? 1 : 1.4),
         y : "-20px",
         duration : 0.8,
@@ -244,45 +254,45 @@ export default function Home(){
         ease : "power1.inOut"
       }, 0)
 
-      timelineRef.current.to('#logo_name', {
+      timelineRef.current?.to('#logo_name', {
         scale : 1,
         y : isLaptop ? "-20px" : "-35vh",
-        x : isLaptop && "-250px",
+        x : isLaptop ? "-250px" : "",
         duration : 0.5,
         delay : 0.1,
         ease : "power1.inOut"
       }, 1)
 
-      timelineRef.current.to('#intro_image', {
+      timelineRef.current?.to('#intro_image', {
         scale : 1.2,
         opacity : 1,
         duration : 0.3,
         ease : "circ"
       }, 0)
 
-      timelineRef.current.to('#intro_image', {
+      timelineRef.current?.to('#intro_image', {
         scale : 1,
-        x : isLaptop && "-190px",
+        x : isLaptop ? "-190px" : "",
         duration : 0.5,
         delay : 0.1,
         ease : "power1.inOut"
       }, 1)
 
-      timelineRef.current.to('#intro_section', {
+      timelineRef.current?.to('#intro_section', {
         opacity : 1,
         delay : 0.5,
         duration : 0.3,
         ease : "power1.inOut"
       }, 1)
 
-      timelineRef.current.to('#button_last_animation', {
+      timelineRef.current?.to('#button_last_animation', {
         opacity : 1,
         delay : 0.1,
         duration : 0.5,
         ease : "power1.inOut",
       }, 2)
 
-      timelineRef.current.to('#last_animation_highlight', {
+      timelineRef.current?.to('#last_animation_highlight', {
         backgroundColor : "var(--color-secondary)",
         color : "var(--color-primary)",
         delay : 0.1,
@@ -325,7 +335,7 @@ export default function Home(){
         <div className="absolute top-0 left-0 h-screen w-screen flex justify-center items-end overflow-y-hidden overflow-x-hidden intro-page">
           
           {/*w-[480px] h-[650px]*/}
-          <img id="intro_image" src={"/image/image.png"} className="max-h-[400px] lg:max-h-[700px] absolute z-2 opacity-1 overflow-x-hidden intro-page-content"/>
+          <img id="intro_image" src={"/image/image.png"} className="max-h-[400px] lg:max-h-[700px] absolute z-2 opacity-1 overflow-x-hidden intro-page-content" alt="intro_image"/>
           
           <div id="intro_oval_shape" className="absolute lg:w-[530px] lg:h-[700px] w-[255px] h-[390px] bg-primary rounded-[60%/60%_60%_60%_60%] rotate-325 z-0 opacity-1 translate-y-[20px] overflow-x-hidden intro-page-content"/>
 
@@ -339,7 +349,7 @@ export default function Home(){
         {/* Intro text */}
         <div id="intro_section" className={`${poppins.className} h-screen w-screen absolute top-0 left-0 text-fortext flex flex-col gap-[30px] justify-center items-center z-4 text-center text-wrap lg:translate-x-[210px] lg:translate-y-[90px] xs:-translate-y-[8vh] opacity-0 overflow-x-hidden intro-page-content`}>
           <p id="intro_text" className="lg:max-w-[700px] sm:max-w-[350px] xs:max-w-[300px] lg:text-[32px] sm:text-[20px] xs:text-[16px]">
-            I'm a <span id="last_animation_highlight" className="">full-stack developer</span> specializing in building modern, scalable web applications.
+            I&#39;m a <span id="last_animation_highlight" className="">full-stack developer</span> specializing in building modern, scalable web applications.
           </p>
 
           <div id="button_last_animation" className="flex justify-center items-center sm:gap-6 xs:gap-2 opacity-0">
@@ -592,13 +602,13 @@ export default function Home(){
         <div className=" flex md:flex-row flex-col-reverse justify-center items-center">
           <div className="flex flex-col justify-center items-start gap-4">
             <div className="bg-[var(--color-primary)] md:w-[30vw] md:translate-x-[300px] z-0 p-[30px] px-[50px] rounded-lg">
-               Hey, I'm Raunak — a full-stack developer passionate about building tools that boost productivity and solve real problems. <br/> <br/>
+               Hey, I&#39;m Raunak — a full-stack developer passionate about building tools that boost productivity and solve real problems. <br/> <br/>
 
               My journey began with a curiosity for how things work under the hood, which led me to explore everything from Java and web development to machine learning and system design. I enjoy taking on challenges that require both creative problem-solving and solid engineering. <br/> <br/> 
 
-              When I'm not coding, you'll probably find me working out, reading about brilliant minds like Turing or Ramanujan, or refining side projects that keep me sharp. <br/> <br/>
+              When I&#39;m not coding, you&#39;ll probably find me working out, reading about brilliant minds like Turing or Ramanujan, or refining side projects that keep me sharp. <br/> <br/>
 
-              Ready to connect? Just scroll down — I’d be glad to hear from you. <br/><br/>
+              Ready to connect? Just scroll down — I&#39;d be glad to hear from you. <br/><br/>
             </div>
 
             <a href="mailto:raunakaga12@gmail.com" target="_blank" className="md:translate-x-[300px] border text-[20px] border-[var(--color-primary)] px-6 py-1 rounded-xl text-center hover:bg-[var(--color-secondary)] hover:border-[var(--color-secondary)] hover:text-[var(--color-primary)] hover:font-semibold xs:mx-2 md:mx-0">
@@ -607,7 +617,7 @@ export default function Home(){
           </div>
 
           <div className="z-1">
-            <img id="intro_image" src={"/image/whoami.png"} className=" overflow-x-hidden md:max-w-[800px] xs:max-w-[400px]"/>
+            <img src={"/image/whoami.png"} className=" overflow-x-hidden md:max-w-[800px] xs:max-w-[400px]" alt="who_am_i"/>
           </div>
 
         </div>
