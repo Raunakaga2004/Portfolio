@@ -85,7 +85,7 @@ export default function Home(){
     //laptop animation 1024px 
     mm.add({
       isLaptop: `(min-width: 1024px)`,
-      // isSmallMobile: `(min-width: 320px)`,
+      isSmallMobile: `(min-width: 320px)`,
       // reduceMotion: "(prefers-reduced-motion: reduce)",
     }, (context: gsap.Context & { conditions? : gsap.Conditions})=>{
       const isLaptop = context.conditions?.isLaptop;
@@ -225,7 +225,7 @@ export default function Home(){
     //laptop animation 1024px 
     mm.add({
       isLaptop: `(min-width: 1024px)`,
-      // isSmallMobile: `(min-width: 320px)`,
+      isSmallMobile: `(min-width: 320px)`,
       // reduceMotion: "(prefers-reduced-motion: reduce)",
     }, (context: gsap.Context & { conditions? : gsap.Conditions})=>{
       const isLaptop = context.conditions?.isLaptop;
@@ -272,7 +272,7 @@ export default function Home(){
 
       timelineRef.current?.to('#intro_image', {
         scale : 1,
-        x : isLaptop ? "-190px" : "",
+        x : isLaptop ? "-190px" : "" ,
         duration : 0.5,
         delay : 0.1,
         ease : "power1.inOut"
