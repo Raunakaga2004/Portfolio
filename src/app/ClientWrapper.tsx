@@ -519,6 +519,8 @@ export default function Home(){
             </div>
             <div className="text-[12px] flex gap-1">
               <a href="https://github.com/Raunakaga2004/Portfolio" className="flex flex-row items-center gap-1 mt-4 hover:border-[var(--color-primary)] px-2 py-1 rounded-4xl w-fit border border-[var(--color-projectDiv)]"><Github/> GitHub</a>
+
+              <a href="https://portfolio-mu-smoky-91.vercel.app/" className="flex flex-row items-center gap-1 mt-4 hover:border-[var(--color-primary)] px-2 py-1 rounded-4xl w-fit border border-[var(--color-projectDiv)]"><Live/> Live Link</a>
             </div>
           </div>
 
