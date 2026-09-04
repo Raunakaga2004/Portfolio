@@ -61,8 +61,8 @@ export default function Home() {
           // set the timeline value of logo first
           gsap.to(logo, {
             scale: isLaptop ? 0.2 : 0.3,
-            top: isLaptop ? "-35vh" : -80,
-            left: isLaptop ? -300 : -140,
+            top: isLaptop ? "-35vh" : "-8vh",
+            left: isLaptop ? "-21vw" : "-40vw",
             zIndex: 10,
             smooth: true,
             scrollTrigger: {
