@@ -1,16 +1,46 @@
 @import "tailwindcss";
 
+/* Indigo theme — light by default; dark via OS preference or the [data-theme] toggle */
+:root {
+  --background: #F5F4FA;
+  --surface: #D1D1E9;
+  --text: #16161A;
+  --accent: #6246EA;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --background: #16161A;
+    --surface: #303035;
+    --text: #FFFFFF;
+    --accent: #6246EA;
+  }
+}
+
+:root[data-theme="dark"] {
+  --background: #16161A;
+  --surface: #303035;
+  --text: #FFFFFF;
+  --accent: #6246EA;
+}
+
 @theme inline {
-  --color-primary: #6246EA;
-  --color-secondary: #D1D1E9;
-  --color-fortext: #FFFFFF;
-  --color-backgroundcolor : #16161A;
-  --color-projectDiv : #303035;
-  
+  --color-primary: var(--accent);
+  --color-secondary: var(--surface);
+  --color-fortext: var(--text);
+  --color-backgroundcolor : var(--background);
+  --color-projectDiv : var(--surface);
+
   --breakpoint-lg : 1024px;
   --breakpoint-md : 768px;
   --breakpoint-sm : 360px;
   --breakpoint-xs : 320px;
+}
+
+/* Consistent side whitespace on every scroll section (hero excluded — it's full-bleed by design) */
+.page-section {
+  padding-inline: 10vw;
+  box-sizing: border-box;
 }
 
 /* For Webkit browsers (Chrome, Safari) */
