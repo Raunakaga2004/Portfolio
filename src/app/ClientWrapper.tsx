@@ -1,16 +1,17 @@
 "use client";
 
 import Github from "@/components/icons/Github";
-// main portfolio website 
+// main portfolio website
 
 // import Logo from "@/components/Logo";
 import { qwigley, workSans, sora } from "@/utils/font";
+import SideNav from "@/components/SideNav";
 
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollSmoother, ScrollTrigger, SplitText } from "gsap/all";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import Live from "@/components/icons/Live";
 // import { skillsType } from "./page";
 
@@ -29,6 +30,7 @@ export default function Home(){
 
   const containerRef = useRef(null); // Ref for the component's container
   const timelineRef = useRef<GSAPTimeline | null>(null); // Ref to store the timeline instance
+  const [introDone, setIntroDone] = useState(false); // drives SideNav's reveal once the intro (photo) animation finishes
 
   // scoll animation and snap
   useGSAP(()=>{
@@ -210,6 +212,7 @@ export default function Home(){
       },
       onComplete : ()=>{
         scrollPageRef.current?.classList.remove('overflow-y-hidden');
+        setIntroDone(true);
       }
     })
 
@@ -328,8 +331,13 @@ export default function Home(){
 
   return (
     <div className={`${workSans.className} relative h-screen w-screen overflow-x-hidden overflow-y-hidden hide-scrollbar`} ref={scrollPageRef}>
+      {/* SideNav is nested here because nothing on scrollPageRef itself applies a
+          transform/filter/perspective; if that ever changes, move SideNav to render
+          as a sibling instead so its `fixed` positioning stays viewport-relative. */}
+      <SideNav scrollerRef={scrollPageRef} visible={introDone} />
+
       {/* intro section */}
-      <div className="h-screen page-section" ref={containerRef}>
+      <div id="home" className="h-screen page-section" ref={containerRef}>
 
         <div className="absolute top-0 left-0 h-screen w-screen flex justify-center items-end overflow-y-hidden overflow-x-hidden intro-page">
           
@@ -598,7 +606,7 @@ export default function Home(){
         </div>
       </div>
 
-      <div className="page-section text-fortext h-fit flex flex-col justify-center items-center xs:mt-[30vh] md:mt-[10vh]">
+      <div id="about" className="page-section text-fortext h-fit flex flex-col justify-center items-center xs:mt-[30vh] md:mt-[10vh]">
         {/* about me page */}
         <div className={`${sora.className} md:text-[50px] text-[30px] px-6 text-center`}>About Me</div>
         
