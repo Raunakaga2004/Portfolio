@@ -43,6 +43,14 @@
   box-sizing: border-box;
 }
 
+/* From md (768px) up — the breakpoint where SideNav shows full labels — side
+   whitespace switches from the fluid 10vw to a strict, fixed 150px. */
+@media (min-width: 768px) {
+  .page-section {
+    padding-inline: 150px;
+  }
+}
+
 /* For Webkit browsers (Chrome, Safari) */
 .hide-scrollbar::-webkit-scrollbar {
     width: 0;

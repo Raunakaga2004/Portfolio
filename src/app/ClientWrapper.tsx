@@ -356,21 +356,28 @@ export default function Home(){
         </div>
 
         {/* Intro text */}
-        <div id="intro_section" className={`${workSans.className} h-screen w-screen absolute top-0 left-0 text-fortext flex flex-col gap-[30px] justify-center items-center z-4 text-center text-wrap lg:translate-x-[210px] lg:translate-y-[90px] xs:-translate-y-[8vh] opacity-0 overflow-x-hidden intro-page-content`}>
-          <p id="intro_text" className="lg:max-w-[700px] sm:max-w-[350px] xs:max-w-[300px] lg:text-[3.2vh] sm:text-[20px] xs:text-[16px]">
-            I&#39;m a <span id="last_animation_highlight" className="">full-stack developer</span> specializing in building modern, scalable web applications.
-          </p>
+        <div id="intro_section" className={`${workSans.className} h-screen w-screen absolute top-0 left-0 text-fortext flex flex-col justify-center items-center z-4 text-center text-wrap lg:translate-x-[210px] lg:translate-y-[90px] xs:-translate-y-[8vh] opacity-0 overflow-x-hidden intro-page-content`}>
+          {/* Single shared boundary: keeps both the paragraph and the button row an equal
+              distance from the right edge as the left-side gutter, accounting for the
+              fixed SideNav living in that same right-side space. Below lg (where the
+              nav is dots-only / hamburger, not a wide label column) this cap doesn't
+              apply, matching the pre-navbar mobile layout exactly. */}
+          <div className="flex flex-col items-center gap-[30px] w-full lg:max-w-[min(700px,calc(100vw-720px))]">
+            <p id="intro_text" className="w-full lg:max-w-[700px] sm:max-w-[350px] xs:max-w-[300px] lg:text-[3.2vh] sm:text-[20px] xs:text-[16px]">
+              I&#39;m a <span id="last_animation_highlight" className="">full-stack developer</span> specializing in building modern, scalable web applications.
+            </p>
 
-          <div id="button_last_animation" className="flex justify-center items-center sm:gap-6 xs:gap-2 opacity-0">
-            <a href="/resume/RaunakResume-2.pdf" download="RaunakResume.pdf">
-            <button className="lg:text-[20px] sm:text-[16px] xs:text-[12px] border md:hover:bg-secondary px-6 py-1 rounded-md md:hover:text-primary md:hover:font-semibold md:hover:border-secondary">Resume</button>
-            </a>
-            <a href="#work">
-            <button className="lg:text-[20px] sm:text-[16px] xs:text-[12px] border md:hover:bg-secondary px-6 py-1 rounded-md md:hover:text-primary md:hover:font-semibold md:hover:border-secondary">View My Work</button>
-            </a>
+            <div id="button_last_animation" className="flex flex-wrap w-full justify-center items-center sm:gap-6 xs:gap-2 opacity-0">
+              <a href="/resume/RaunakResume-2.pdf" download="RaunakResume.pdf">
+              <button className="lg:text-[20px] sm:text-[16px] xs:text-[12px] border md:hover:bg-secondary px-6 py-1 rounded-md md:hover:text-primary md:hover:font-semibold md:hover:border-secondary">Resume</button>
+              </a>
+              <a href="#work">
+              <button className="lg:text-[20px] sm:text-[16px] xs:text-[12px] border md:hover:bg-secondary px-6 py-1 rounded-md md:hover:text-primary md:hover:font-semibold md:hover:border-secondary">View My Work</button>
+              </a>
+            </div>
           </div>
         </div>
-        
+
       </div>
       
       <div id="offer-parent" className="page-section h-screen text-fortext flex flex-col justify-center items-center md:gap-[10vh] xs:gap-[4vh] ">
