@@ -24,6 +24,24 @@
   --accent: #6246EA;
 }
 
+/* Tailwind preflight resets buttons to the default cursor; side nav, hamburger menu etc. are buttons */
+button:not(:disabled) { cursor: pointer; }
+
+/* Reusable Button (src/components/Button.tsx): picks light/dark colors the same way as .light-lift */
+.btn { --btn: var(--btn-light); --btn-h: var(--btn-light-hover); transition: background-color .2s, color .2s, border-color .2s; cursor: pointer; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .btn { --btn: var(--btn-dark); --btn-h: var(--btn-dark-hover); }
+}
+:root[data-theme="dark"] .btn { --btn: var(--btn-dark); --btn-h: var(--btn-dark-hover); }
+.btn-outline { border: 1px solid var(--btn); background: transparent; }
+.btn-filled { border: 1px solid var(--btn); background: var(--btn); color: var(--btn-fg, #fff); }
+@media (hover: hover) {
+  .btn-outline:hover { background: var(--btn-bg-h, var(--btn-h)); border-color: var(--btn-h); color: var(--btn-fg-hover, var(--color-primary)); }
+  .btn-filled:hover { background: var(--btn-h); border-color: var(--btn-h); color: var(--btn-fg-hover, var(--btn-fg, #fff)); }
+}
+.btn:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+
 @theme inline {
   --color-primary: var(--accent);
   --color-secondary: var(--surface);

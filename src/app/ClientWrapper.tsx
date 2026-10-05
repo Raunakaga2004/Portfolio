@@ -13,6 +13,7 @@ import { ScrollSmoother, ScrollTrigger, SplitText } from "gsap/all";
 
 import { useRef, useState } from "react";
 import Live from "@/components/icons/Live";
+import Button from "@/components/Button";
 // import { skillsType } from "./page";
 
 gsap.registerPlugin(ScrollTrigger, SplitText)
@@ -368,12 +369,8 @@ export default function Home(){
             </p>
 
             <div id="button_last_animation" className="flex flex-wrap w-full justify-center items-center sm:gap-6 xs:gap-2 opacity-0">
-              <a href="/resume/RaunakResume-2.pdf" download="RaunakResume.pdf">
-              <button className="lg:text-[20px] sm:text-[16px] xs:text-[12px] border md:hover:bg-secondary px-6 py-1 rounded-md md:hover:text-primary md:hover:font-semibold md:hover:border-secondary">Resume</button>
-              </a>
-              <a href="#work">
-              <button className="lg:text-[20px] sm:text-[16px] xs:text-[12px] border md:hover:bg-secondary px-6 py-1 rounded-md md:hover:text-primary md:hover:font-semibold md:hover:border-secondary">View My Work</button>
-              </a>
+              <Button href="/resume/RaunakResume-2.pdf" download="RaunakResume.pdf" label="Resume" hoverColor="var(--color-primary)" className="lg:text-[20px] sm:text-[16px] xs:text-[12px] px-6 py-1 [--btn-fg-hover:white]"/>
+              <Button href="#work" label="View My Work" hoverColor="var(--color-primary)" className="lg:text-[20px] sm:text-[16px] xs:text-[12px] px-6 py-1 [--btn-fg-hover:white]"/>
             </div>
           </div>
         </div>
@@ -515,7 +512,7 @@ export default function Home(){
               })}
             </div>
             <div className="text-[12px] flex gap-1">
-              <a href="https://github.com/Raunakaga2004/LockedIn" className="flex flex-row items-center gap-1 mt-4 hover:border-[var(--color-primary)] px-2 py-1 rounded-4xl w-fit border border-[var(--color-projectDiv)]"><Github/> GitHub</a>
+              <Button href="https://github.com/Raunakaga2004/LockedIn" icon={<Github/>} label="GitHub" color="var(--color-projectDiv)" hoverColor="var(--color-primary)" className="mt-4 px-2 py-1 rounded-4xl w-fit [--btn-bg-h:transparent] [--btn-fg-hover:var(--color-fortext)]"/>
             </div>
           </div>
 
@@ -532,9 +529,9 @@ export default function Home(){
               })}
             </div>
             <div className="text-[12px] flex gap-1">
-              <a href="https://github.com/Raunakaga2004/Portfolio" className="flex flex-row items-center gap-1 mt-4 hover:border-[var(--color-primary)] px-2 py-1 rounded-4xl w-fit border border-[var(--color-projectDiv)]"><Github/> GitHub</a>
+              <Button href="https://github.com/Raunakaga2004/Portfolio" icon={<Github/>} label="GitHub" color="var(--color-projectDiv)" hoverColor="var(--color-primary)" className="mt-4 px-2 py-1 rounded-4xl w-fit [--btn-bg-h:transparent] [--btn-fg-hover:var(--color-fortext)]"/>
 
-              <a href="https://portfolio-mu-smoky-91.vercel.app/" className="flex flex-row items-center gap-1 mt-4 hover:border-[var(--color-primary)] px-2 py-1 rounded-4xl w-fit border border-[var(--color-projectDiv)]"><Live/> Live Link</a>
+              <Button href="https://portfolio-mu-smoky-91.vercel.app/" icon={<Live/>} label="Live Link" color="var(--color-projectDiv)" hoverColor="var(--color-primary)" className="mt-4 px-2 py-1 rounded-4xl w-fit [--btn-bg-h:transparent] [--btn-fg-hover:var(--color-fortext)]"/>
             </div>
           </div>
 
@@ -551,7 +548,7 @@ export default function Home(){
               })}
             </div>
             <div className="text-[12px] flex gap-1">
-              <a href="https://github.com/Raunakaga2004/Sudoku-Game" className="flex flex-row items-center gap-1 mt-4 hover:border-[var(--color-primary)] px-2 py-1 rounded-4xl w-fit border border-[var(--color-projectDiv)]"><Github/> GitHub</a>
+              <Button href="https://github.com/Raunakaga2004/Sudoku-Game" icon={<Github/>} label="GitHub" color="var(--color-projectDiv)" hoverColor="var(--color-primary)" className="mt-4 px-2 py-1 rounded-4xl w-fit [--btn-bg-h:transparent] [--btn-fg-hover:var(--color-fortext)]"/>
             </div>
           </div>
 
@@ -568,7 +565,7 @@ export default function Home(){
               })}
             </div>
             <div className="text-[12px] flex gap-1">
-              <a href="https://github.com/Raunakaga2004/to-do-list-with-subtasks-features" className="flex flex-row items-center gap-1 mt-4 hover:border-[var(--color-primary)] px-2 py-1 rounded-4xl w-fit border border-[var(--color-projectDiv)]"><Github/> GitHub</a>
+              <Button href="https://github.com/Raunakaga2004/to-do-list-with-subtasks-features" icon={<Github/>} label="GitHub" color="var(--color-projectDiv)" hoverColor="var(--color-primary)" className="mt-4 px-2 py-1 rounded-4xl w-fit [--btn-bg-h:transparent] [--btn-fg-hover:var(--color-fortext)]"/>
             </div>
           </div>
 
@@ -585,9 +582,9 @@ export default function Home(){
               })}
             </div>
             <div className="text-[12px] flex gap-1">
-              <a href="https://github.com/Raunakaga2004/CompileStorm" className="flex flex-row items-center gap-1 mt-4 hover:border-[var(--color-primary)] px-2 py-1 rounded-4xl w-fit border border-[var(--color-projectDiv)]"><Github/> GitHub</a>
+              <Button href="https://github.com/Raunakaga2004/CompileStorm" icon={<Github/>} label="GitHub" color="var(--color-projectDiv)" hoverColor="var(--color-primary)" className="mt-4 px-2 py-1 rounded-4xl w-fit [--btn-bg-h:transparent] [--btn-fg-hover:var(--color-fortext)]"/>
 
-              <a href="https://compilestorm-frontend.netlify.app/" className="flex flex-row items-center gap-1 mt-4 hover:border-[var(--color-primary)] px-2 py-1 rounded-4xl w-fit border border-[var(--color-projectDiv)]"><Live/> Live Link</a>
+              <Button href="https://compilestorm-frontend.netlify.app/" icon={<Live/>} label="Live Link" color="var(--color-projectDiv)" hoverColor="var(--color-primary)" className="mt-4 px-2 py-1 rounded-4xl w-fit [--btn-bg-h:transparent] [--btn-fg-hover:var(--color-fortext)]"/>
             </div>
           </div>
           {/* <img src={"/image/projects/compileStorm.png"} className="hover-image"/> */}
@@ -605,9 +602,9 @@ export default function Home(){
               })}
             </div>
             <div className="text-[12px] flex gap-1">
-              <a href="https://github.com/Raunakaga2004/PomoFocus" className="flex flex-row items-center gap-1 mt-4 hover:border-[var(--color-primary)] px-2 py-1 rounded-4xl w-fit border border-[var(--color-projectDiv)]"><Github/> GitHub</a>
+              <Button href="https://github.com/Raunakaga2004/PomoFocus" icon={<Github/>} label="GitHub" color="var(--color-projectDiv)" hoverColor="var(--color-primary)" className="mt-4 px-2 py-1 rounded-4xl w-fit [--btn-bg-h:transparent] [--btn-fg-hover:var(--color-fortext)]"/>
 
-              <a href="https://pomofocus-vxuz.onrender.com/" className="flex flex-row items-center gap-1 mt-4 hover:border-[var(--color-primary)] px-2 py-1 rounded-4xl w-fit border border-[var(--color-projectDiv)]"><Live/> Live Link</a>
+              <Button href="https://pomofocus-vxuz.onrender.com/" icon={<Live/>} label="Live Link" color="var(--color-projectDiv)" hoverColor="var(--color-primary)" className="mt-4 px-2 py-1 rounded-4xl w-fit [--btn-bg-h:transparent] [--btn-fg-hover:var(--color-fortext)]"/>
             </div>
           </div>
         </div>
@@ -629,9 +626,7 @@ export default function Home(){
               Ready to connect? Just scroll down — I&#39;d be glad to hear from you. <br/><br/>
             </div>
 
-            <a href="mailto:raunakaga12@gmail.com" target="_blank" className="md:translate-x-[300px] border text-[20px] border-[var(--color-primary)] px-6 py-1 rounded-xl text-center hover:bg-[var(--color-secondary)] hover:border-[var(--color-secondary)] hover:text-[var(--color-primary)] hover:font-semibold xs:mx-4 md:mx-2">
-              <button>Hire Me</button>
-            </a>
+            <Button href="mailto:raunakaga12@gmail.com" target="_blank" label="Hire Me" hoverColor="var(--color-primary)" className="md:translate-x-[300px] text-[20px] px-6 py-1 [--btn-fg-hover:white] xs:mx-4 md:mx-2"/>
           </div>
 
           <div className="z-1">
