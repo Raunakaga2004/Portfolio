@@ -104,35 +104,73 @@ export default function Home(){
             scroller : containerElement,
             start : 'top top',
             scrub : true,
-            snap : {
-              snapTo : 1,
-              duration : {
-                min : 0.4,
-                max : 0.6,
-              },
-              directional : true,
-              ease : 'power1.inOut',
-            }
           },
         })
+        const blurTrigger = {
+          trigger : section,
+          scroller : containerElement,
+          start : 'top top',
+          scrub : true,
+        }
         gsap.to(".intro-page-content", {
           filter : 'blur(10px)',
           smooth : true,
-          scrollTrigger : {
-            trigger : section,
-            scroller : containerElement,
-            start : 'top top',
-            scrub : true,
-            snap : {
-              snapTo : 1,
-              duration : {
-                min : 0.4,
-                max : 0.6,
-              },
-              directional : true,
-              ease : 'power1.inOut',
-            }
+          scrollTrigger : blurTrigger,
+        })
+
+        // image + shape are pinned (fixed), so they stay in place instead of scrolling up
+        // Opacity is set directly from scroll progress (not a tween): a tween records its start value
+        // at creation (before the intro reveals these) and left them partly faded on scroll up.
+        // Base values match where the intro leaves them (image 1, shape 0.4); progress 0 => exactly base.
+        const setFade = (p : number) => {
+          gsap.set("#intro_image", { opacity : 1 - p })
+        }
+        ScrollTrigger.create({
+          trigger : section,
+          scroller : containerElement,
+          start : 'top top',
+          end : 'bottom top',
+          onUpdate : (self) => setFade(self.progress),
+          onLeaveBack : () => setFade(0),
+        })
+
+        // shape: tilt left -> right and grow/centre over the hero->services scroll, then stays as the
+        // services background. GSAP merges the CSS classes (rotate-325, translate-y) into its own
+        // transform, so rotation/y start values must be the class values (-35deg, 10vh/7vh), not 0.
+        // fromTo (start = where the intro leaves it) because a plain .to() would record a stale start.
+        const vh = window.innerHeight / 100
+        const shapeY = (isLaptop ? 10 : 7) * vh
+        gsap.fromTo("#intro_oval_shape",
+          { rotation : -35, scale : 0.8, x : isLaptop ? -190 : 0, y : shapeY },
+          { rotation : 35, scale : 2.2, x : 0, y : shapeY - 10 * vh, ease : 'none', immediateRender : false,
+            scrollTrigger : { trigger : section, scroller : containerElement, start : 'top top', end : 'bottom top', scrub : true } }
+        )
+
+        // gentle snap to the centred service boxes, from either side: range runs from "offer enters" to
+        // 0.4 viewport past centre, so the centre point is progress 1/1.4. Outside +-0.2 viewport of it
+        // snapTo returns v unchanged (no jumping).
+        const snapCentre = 1 / 1.4
+        const snapWindow = 0.2 / 1.4
+        ScrollTrigger.create({
+          trigger : '#offer-parent',
+          scroller : containerElement,
+          start : 'top bottom',
+          end : 'top -40%',
+          snap : {
+            snapTo : (v : number) => Math.abs(v - snapCentre) < snapWindow ? snapCentre : v,
+            delay : 0.1,
+            duration : { min : 0.3, max : 0.7 },
+            ease : 'power1.inOut',
           },
+        })
+
+        // fade the background shape out as the skills section arrives
+        ScrollTrigger.create({
+          trigger : '#skill-parent',
+          scroller : containerElement,
+          start : 'top bottom',
+          end : 'top top',
+          onUpdate : (self) => gsap.set("#intro_oval_shape", { opacity : 0.4 * (1 - self.progress) }),
         })
 
         gsap.timeline({
@@ -140,7 +178,7 @@ export default function Home(){
           scrollTrigger : {
             trigger : '#offer-parent',
             scroller : containerElement,
-            start : '30% bottom',
+            start : 'top bottom',
             end : 'bottom bottom',
             scrub : true,
             // snap : {
@@ -174,18 +212,9 @@ export default function Home(){
           trigger : '#skill-parent',
           scroller : containerElement,
           start : 'top bottom',
-          end : 'bottom bottom',
+          end : '+=140%', // was 'bottom bottom' (~100%): longer range = slower exit
           scrub : true,
           // markers : true,
-          snap : {
-            snapTo : 1,
-            duration : {
-              min : 0.4,
-              max : 0.6,
-            },
-            directional : true,
-            ease : 'power1.inOut',
-          }
         }
       })
       .to('#offer-div-left', {
@@ -339,10 +368,10 @@ export default function Home(){
       {/* intro section */}
       <div id="home" className="h-screen page-section" ref={containerRef}>
 
-        <div className="absolute top-0 left-0 h-screen w-screen flex justify-center items-end overflow-y-hidden overflow-x-hidden intro-page">
+        <div className="fixed top-0 left-0 h-screen w-screen flex justify-center items-end overflow-y-hidden overflow-x-hidden pointer-events-none intro-page">
           
           {/*w-[480px] h-[650px]*/}
-          <img id="intro_image" src={"/image/image.png"} className="max-h-[400px] lg:max-h-[72vh] absolute z-2 opacity-1 overflow-x-hidden intro-page-content" alt="intro_image"/>
+          <img id="intro_image" src={"/image/image.webp"} fetchPriority="high" className="max-h-[400px] lg:max-h-[72vh] absolute z-2 opacity-1 overflow-x-hidden intro-page-content" alt="intro_image"/>
           
 {/* <div id="intro_oval_shape" className="absolute lg:w-[530px] lg:h-[700px] w-[255px] h-[390px] bg-primary rounded-[60%/60%_60%_60%_60%] rotate-325 z-0 opacity-1 translate-y-[20px] overflow-x-hidden intro-page-content"/> */}
 
@@ -380,7 +409,7 @@ export default function Home(){
 
       </div>
       
-      <div id="offer-parent" className="page-section h-screen text-fortext flex flex-col justify-center items-center md:gap-[10vh] xs:gap-[4vh] ">
+      <div id="offer-parent" className="relative page-section h-screen text-fortext flex flex-col justify-center items-center md:gap-[10vh] xs:gap-[4vh] ">
       {/* <div className="absolute z-1 h-screen w-screen flex justify-center items-center">
         <div className="h-full w-0 border border-red-500"></div>
 
@@ -391,8 +420,8 @@ export default function Home(){
 
         <div id="offer-heading" className={`${sora.className} sm:text-[30px] xs:text-[20px] lg:text-[50px] opacity-0 xs:translate-y-[20px] md:translate-y-[0px]`}>How I Can Help</div>
 
-        <div className="flex flex-col md:flex-row justify-center items-center md:gap-[5vw] gap-[1vh]">
-          <div id="offer-div-left" className="-translate-x-[60vw] md:max-w-[400px] max-w-[350px] md:min-h-[68vh] xs:max-h-[36vh] rounded-md bg-primary offer-div md:p-5 p-2 text-center text">
+        <div className="flex flex-col md:flex-row justify-center items-center md:items-stretch md:gap-[5vw] gap-[1vh]">
+          <div id="offer-div-left" className="-translate-x-[60vw] w-[350px] max-w-[90vw] md:w-[min(360px,calc((100vw-300px-5vw)/2))] h-[36vh] md:h-auto md:min-h-[68vh] rounded-md bg-primary offer-div md:p-5 p-2 text-center text">
             <div className={`${sora.className} md:text-[30px] xs:text-[20px] font-semibold`}>
               For Clients
             </div>
@@ -407,7 +436,7 @@ export default function Home(){
               🤝 Clear Communication <div className="pl-5 text-[10px] pb-2 md:text-[16px]">Regular updates and feedback</div>
             </div>
           </div>
-          <div id="offer-div-right" className="translate-x-[60vw] md:max-w-[400px] max-w-[350px] md:max-h-[80vh] md:min-h-[68vh] xs:max-h-[36vh] rounded-md bg-primary offer-div text-center p-2 md:p-5">
+          <div id="offer-div-right" className="translate-x-[60vw] w-[350px] max-w-[90vw] md:w-[min(360px,calc((100vw-300px-5vw)/2))] h-[36vh] md:h-auto md:min-h-[68vh] rounded-md bg-primary offer-div text-center p-2 md:p-5">
             <div className={`${sora.className} md:text-[30px] xs:text-[20px] font-semibold`}>
               For Hiring Team
             </div>
@@ -635,7 +664,7 @@ export default function Home(){
           </div>
 
           <div className="z-1">
-            <img src={"/image/whoami.png"} className=" overflow-x-hidden md:max-w-[800px] xs:max-w-[400px]" alt="who_am_i"/>
+            <img src={"/image/whoami.webp"} className="overflow-x-hidden md:max-w-[800px] xs:max-w-[400px]" alt="who_am_i"/>
           </div>
 
         </div>
