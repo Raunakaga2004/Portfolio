@@ -144,14 +144,14 @@ export default function SideNav({ scrollerRef, visible }: SideNavProps) {
             >
               <span
                 className={`${sora.className} hidden md:inline text-sm transition-colors duration-300 ${
-                  isActive ? "text-primary font-semibold" : "text-fortext/50"
+                  isActive ? "text-primary font-semibold" : "text-fortext/50 group-hover:text-fortext"
                 }`}
               >
                 {label}
               </span>
               <span
                 className={`rounded-full transition-all duration-300 ${
-                  isActive ? "w-2.5 h-2.5 bg-primary" : "w-1.5 h-1.5 bg-fortext/40"
+                  isActive ? "w-2.5 h-2.5 bg-primary" : "w-1.5 h-1.5 bg-fortext/40 group-hover:bg-fortext"
                 }`}
               />
             </button>
@@ -192,7 +192,7 @@ export default function SideNav({ scrollerRef, visible }: SideNavProps) {
                   handleOverlayItemClick(id);
                 }}
                 className={`${sora.className} text-2xl transition-colors duration-300 ${
-                  isActive ? "text-primary font-semibold" : "text-fortext/60"
+                  isActive ? "text-primary font-semibold" : "text-fortext/60 hover:text-fortext"
                 }`}
               >
                 {label}
