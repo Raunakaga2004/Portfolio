@@ -15,10 +15,11 @@ interface SideNavProps {
 
 const NAV_ITEMS = [
   { id: "home", label: "Intro" },
-  { id: "offer-parent", label: "Services" },
   { id: "skill-parent", label: "Skills" },
   { id: "work", label: "Work" },
+  { id: "experience", label: "Experience" },
   { id: "about", label: "About" },
+  { id: "contact", label: "Contact" },
 ] as const;
 
 function HamburgerIcon() {

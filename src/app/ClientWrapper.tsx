@@ -153,24 +153,6 @@ export default function Home(){
             scrollTrigger : { trigger : section, scroller : containerElement, start : 'top top', end : 'bottom top', scrub : true } }
         )
 
-        // gentle snap to the centred service boxes, from either side: range runs from "offer enters" to
-        // 0.4 viewport past centre, so the centre point is progress 1/1.4. Outside +-0.2 viewport of it
-        // snapTo returns v unchanged (no jumping).
-        const snapCentre = 1 / 1.4
-        const snapWindow = 0.2 / 1.4
-        ScrollTrigger.create({
-          trigger : '#offer-parent',
-          scroller : containerElement,
-          start : 'top bottom',
-          end : 'top -40%',
-          snap : {
-            snapTo : (v : number) => Math.abs(v - snapCentre) < snapWindow ? snapCentre : v,
-            delay : 0.1,
-            duration : { min : 0.3, max : 0.7 },
-            ease : 'power1.inOut',
-          },
-        })
-
         // fade the background shape out as the skills section arrives
         ScrollTrigger.create({
           trigger : '#skill-parent',
@@ -180,58 +162,8 @@ export default function Home(){
           onUpdate : (self) => gsap.set("#intro_oval_shape", { opacity : 0.4 * (1 - self.progress) }),
         })
 
-        gsap.timeline({
-          smooth : true,
-          scrollTrigger : {
-            trigger : '#offer-parent',
-            scroller : containerElement,
-            start : 'top bottom',
-            end : 'bottom bottom',
-            scrub : true,
-            // snap : {
-            //   snapTo : 1,
-            //   duration : {
-            //     min : 0.4,
-            //     max : 0.6,
-            //   },
-            //   directional : true,
-            //   ease : 'power1.inOut',
-            // }
-          }
-        })
-        .to('#offer-heading', {
-          opacity : 1,
-          ease : 'power1.in',
-        }, 0)
-        .to('#offer-div-left', {
-          x : 0,
-          ease : 'power1.in'
-        }, 0)
-        .to('#offer-div-right', {
-          x : 0,
-          ease : 'power1.in'
-        }, 0)
       }
 
-      gsap.timeline({
-        smooth : true,
-        scrollTrigger : {
-          trigger : '#skill-parent',
-          scroller : containerElement,
-          start : 'top bottom',
-          end : '+=140%', // was 'bottom bottom' (~100%): longer range = slower exit
-          scrub : true,
-          // markers : true,
-        }
-      })
-      .to('#offer-div-left', {
-        x : '-60vw',
-        ease : 'power1.out'
-      }, 0)
-      .to('#offer-div-right', {
-        x : '60vw',
-        ease : 'power1.out'
-      }, 0)
     })
 
       
@@ -412,50 +344,6 @@ export default function Home(){
 
       </div>
       
-      <div id="offer-parent" className="relative page-section h-screen text-fortext flex flex-col justify-center items-center md:gap-[10vh] xs:gap-[4vh] ">
-      {/* <div className="absolute z-1 h-screen w-screen flex justify-center items-center">
-        <div className="h-full w-0 border border-red-500"></div>
-
-        <div className="absolute left-[15%] h-full w-0 border border-red-500"></div>
-
-        <div className="absolute right-[15%] h-full w-0 border border-red-500"></div>
-      </div> */}
-
-        <div id="offer-heading" className={`${sora.className} sm:text-[30px] xs:text-[20px] lg:text-[50px] opacity-0 xs:translate-y-[20px] md:translate-y-[0px]`}>How I Can Help</div>
-
-        <div className="flex flex-col md:flex-row justify-center items-center md:items-stretch md:gap-[5vw] gap-[1vh]">
-          <div id="offer-div-left" className="-translate-x-[60vw] w-[350px] max-w-[90vw] md:w-[min(360px,calc((100vw-300px-5vw)/2))] h-[36vh] md:h-auto md:min-h-[68vh] rounded-md bg-primary offer-div md:p-5 p-2 text-center text">
-            <div className={`${sora.className} md:text-[30px] xs:text-[20px] font-semibold`}>
-              For Clients
-            </div>
-            <div className="md:text-[20px] xs:text-[12px] mb-[8px] md:mb-[28px] mt-[8px] md:mt-[12px]">
-              I collaborate with clients to turn ideas into fast, scalable, and appealing products.
-            </div>
-            <div className="md:text-[20px] xs:text-[12px] text-left px-5">
-              💡 Custom Web Apps <div className="pl-5 text-[10px] pb-2 md:text-[16px]">Full-stack solutions tailored to your goals</div>
-              ⚡ Responsive Design <div className="pl-5 text-[10px] pb-2 md:text-[16px]">Optimized for all devices</div>
-              🔍 SEO & Speed <div className="pl-5 text-[10px] pb-2 md:text-[16px]">Fast load times, search-friendly</div>
-              🧱 Modular Codebase <div className="pl-5 text-[10px] pb-2 md:text-[16px]">Easy to scale and maintain</div>
-              🤝 Clear Communication <div className="pl-5 text-[10px] pb-2 md:text-[16px]">Regular updates and feedback</div>
-            </div>
-          </div>
-          <div id="offer-div-right" className="translate-x-[60vw] w-[350px] max-w-[90vw] md:w-[min(360px,calc((100vw-300px-5vw)/2))] h-[36vh] md:h-auto md:min-h-[68vh] rounded-md bg-primary offer-div text-center p-2 md:p-5">
-            <div className={`${sora.className} md:text-[30px] xs:text-[20px] font-semibold`}>
-              For Hiring Team
-            </div>
-            <div className="md:text-[20px] xs:text-[12px] mb-[8px] mt-[8px] md:mt-[12px] md:mb-[28px]">
-              I strive to work closely with my team, contributing honestly and supporting shared goals.
-            </div>
-            <div className="md:text-[20px] xs:text-[12px] text-left px-5">
-              🧠 Strong Core Skills<div className="pl-5 text-[10px] pb-2 md:text-[16px]">DSA + full-stack development</div>
-              ✍️ Clean Code <div className="pl-5 text-[10px] pb-2 md:text-[16px]">Focused on quality and maintainability</div>
-              🚀 Ownership<div className="pl-5 text-[10px] pb-2 md:text-[16px]">Proactive and solution-driven</div>
-              🤝 Team Player<div className="pl-5 text-[10px] pb-2 md:text-[16px]">Open to feedback, collaborative</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
       <div id="skill-parent" className="page-section text-fortext flex flex-col justify-center items-center md:gap-10 xs:gap-4 xs:h-fit md:h-screen z-0">
         
         {/* Heading */}
@@ -645,6 +533,10 @@ export default function Home(){
         </div>
       </div>
 
+      <div id="experience" className="page-section h-screen text-fortext flex flex-col justify-center items-center">
+        <div className={`${sora.className} md:text-[50px] text-[30px] px-6 text-center`}>Experience</div>
+      </div>
+
       <div id="about" className="page-section text-fortext h-fit flex flex-col justify-center items-center xs:mt-[30vh] md:mt-[10vh]">
         {/* about me page */}
         <div className={`${sora.className} md:text-[50px] text-[30px] px-6 text-center`}>About Me</div>
@@ -669,6 +561,11 @@ export default function Home(){
           </div>
 
         </div>
+      </div>
+
+      <div id="contact" className="page-section h-screen text-fortext flex flex-col justify-center items-center gap-6">
+        <div className={`${sora.className} md:text-[50px] text-[30px] px-6 text-center`}>Contact Me</div>
+        <Button href="mailto:raunakaga12@gmail.com" target="_blank" label="Email Me" hoverColor="var(--color-primary)" className="text-[20px] px-6 py-1 [--btn-fg-hover:white]"/>
       </div>
 
       <div className="bg-[var(--color-projectDiv)] w-screen h-fit py-2 text-center text-[var(--color-primary)] xs:mt-10 md:mt-0">Built By <div className="text-fortext text-[20px]">Raunak Agarwal</div></div>
