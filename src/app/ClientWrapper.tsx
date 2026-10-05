@@ -113,8 +113,14 @@ export default function Home(){
           start : 'top top',
           scrub : true,
         }
-        gsap.to(".intro-page-content", {
+        gsap.to(".intro-page-content:not(#intro_image)", {
           filter : 'blur(10px)',
+          smooth : true,
+          scrollTrigger : blurTrigger,
+        })
+        // hero blur goes through --blur so the theme brightness in .light-lift isn't frozen by an inline filter
+        gsap.to("#intro_image", {
+          "--blur" : "10px",
           smooth : true,
           scrollTrigger : blurTrigger,
         })
@@ -372,7 +378,7 @@ export default function Home(){
         <div className="fixed top-0 left-0 h-screen w-screen flex justify-center items-end overflow-y-hidden overflow-x-hidden pointer-events-none intro-page">
           
           {/*w-[480px] h-[650px]*/}
-          <img id="intro_image" src={"/image/image.webp"} fetchPriority="high" className="max-h-[400px] lg:max-h-[72vh] absolute z-2 opacity-1 overflow-x-hidden intro-page-content" alt="intro_image"/>
+          <img id="intro_image" src={"/image/image.webp"} fetchPriority="high" className="light-lift max-h-[400px] lg:max-h-[72vh] absolute z-2 opacity-1 overflow-x-hidden intro-page-content" alt="intro_image"/>
           
 {/* <div id="intro_oval_shape" className="absolute lg:w-[530px] lg:h-[700px] w-[255px] h-[390px] bg-primary rounded-[60%/60%_60%_60%_60%] rotate-325 z-0 opacity-1 translate-y-[20px] overflow-x-hidden intro-page-content"/> */}
 
@@ -659,7 +665,7 @@ export default function Home(){
           </div>
 
           <div className="z-1">
-            <img src={"/image/whoami.webp"} className="overflow-x-hidden md:max-w-[800px] xs:max-w-[400px]" alt="who_am_i"/>
+            <img src={"/image/whoami.webp"} className="light-lift overflow-x-hidden md:max-w-[800px] xs:max-w-[400px]" alt="who_am_i"/>
           </div>
 
         </div>

@@ -24,6 +24,13 @@
   --accent: #6246EA;
 }
 
+/* Lighten dark portraits in light mode only */
+.light-lift { --lift: brightness(1.35) contrast(1.05); --blur: 0px; filter: blur(var(--blur)) var(--lift); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .light-lift { --lift: brightness(1) contrast(1); }
+}
+:root[data-theme="dark"] .light-lift { --lift: brightness(1) contrast(1); }
+
 /* Tailwind preflight resets buttons to the default cursor; side nav, hamburger menu etc. are buttons */
 button:not(:disabled) { cursor: pointer; }
 
