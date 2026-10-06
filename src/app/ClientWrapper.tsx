@@ -298,7 +298,7 @@ export default function Home(){
   }
 
   return (
-    <div className={`${workSans.className} relative h-screen w-screen overflow-x-hidden overflow-y-hidden hide-scrollbar`} ref={scrollPageRef}>
+    <div className={`${workSans.className} relative h-screen w-screen overflow-x-hidden overflow-y-hidden hide-scrollbar snap-container`} ref={scrollPageRef}>
       {/* SideNav is nested here because nothing on scrollPageRef itself applies a
           transform/filter/perspective; if that ever changes, move SideNav to render
           as a sibling instead so its `fixed` positioning stays viewport-relative. */}
@@ -543,7 +543,7 @@ export default function Home(){
         
         <div className=" flex md:flex-row flex-col-reverse justify-center items-center">
           <div className="flex flex-col justify-center items-start gap-4">
-            <div className="bg-[var(--color-primary)] md:w-[30vw] md:translate-x-[300px] z-0 p-[30px] px-[50px] rounded-lg">
+            <div className="bg-[var(--color-primary)] md:w-[40vw] z-0 p-[30px] px-[50px] rounded-lg">
                Hey, I&#39;m Raunak — a full-stack developer passionate about building tools that boost productivity and solve real problems. <br/> <br/>
 
               My journey began with a curiosity for how things work under the hood, which led me to explore everything from Java and web development to machine learning and system design. I enjoy taking on challenges that require both creative problem-solving and solid engineering. <br/> <br/> 
@@ -553,11 +553,7 @@ export default function Home(){
               Ready to connect? Just scroll down — I&#39;d be glad to hear from you. <br/><br/>
             </div>
 
-            <Button href="mailto:raunakaga12@gmail.com" target="_blank" label="Hire Me" hoverColor="var(--color-primary)" className="md:translate-x-[300px] text-[20px] px-6 py-1 [--btn-fg-hover:white] xs:mx-4 md:mx-2"/>
-          </div>
-
-          <div className="z-1">
-            <img src={"/image/whoami.webp"} className="light-lift overflow-x-hidden md:max-w-[800px] xs:max-w-[400px]" alt="who_am_i"/>
+            <Button href="mailto:raunakaga12@gmail.com" target="_blank" label="Hire Me" hoverColor="var(--color-primary)" className="text-[20px] px-6 py-1 [--btn-fg-hover:white] xs:mx-4 md:mx-2"/>
           </div>
 
         </div>

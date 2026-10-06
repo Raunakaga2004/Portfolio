@@ -69,6 +69,12 @@ button:not(:disabled) { cursor: pointer; }
 .page-section {
   padding-inline: 10vw;
   box-sizing: border-box;
+  scroll-snap-align: start;
+}
+
+/* Gentle snap: proximity only pulls in when a section edge is near, so tall sections still scroll freely */
+.snap-container {
+  scroll-snap-type: y proximity;
 }
 
 /* From md (768px) up — the breakpoint where SideNav shows full labels — side
