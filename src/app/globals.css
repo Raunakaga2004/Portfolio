@@ -1,16 +1,82 @@
 @import "tailwindcss";
 
+/* Indigo theme — light by default; dark via OS preference or the [data-theme] toggle */
+:root {
+  --background: #F5F4FA;
+  --surface: #D1D1E9;
+  --text: #16161A;
+  --accent: #6246EA;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --background: #16161A;
+    --surface: #303035;
+    --text: #FFFFFF;
+    --accent: #6246EA;
+  }
+}
+
+:root[data-theme="dark"] {
+  --background: #16161A;
+  --surface: #303035;
+  --text: #FFFFFF;
+  --accent: #6246EA;
+}
+
+/* Lighten dark portraits in light mode only */
+.light-lift { --lift: brightness(1.35) contrast(1.05); --blur: 0px; filter: blur(var(--blur)) var(--lift); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .light-lift { --lift: brightness(1) contrast(1); }
+}
+:root[data-theme="dark"] .light-lift { --lift: brightness(1) contrast(1); }
+
+/* Tailwind preflight resets buttons to the default cursor; side nav, hamburger menu etc. are buttons */
+button:not(:disabled) { cursor: pointer; }
+
+/* Reusable Button (src/components/Button.tsx): picks light/dark colors the same way as .light-lift */
+.btn { --btn: var(--btn-light); --btn-h: var(--btn-light-hover); transition: background-color .2s, color .2s, border-color .2s; cursor: pointer; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .btn { --btn: var(--btn-dark); --btn-h: var(--btn-dark-hover); }
+}
+:root[data-theme="dark"] .btn { --btn: var(--btn-dark); --btn-h: var(--btn-dark-hover); }
+.btn-outline { border: 1px solid var(--btn); background: transparent; }
+.btn-filled { border: 1px solid var(--btn); background: var(--btn); color: var(--btn-fg, #fff); }
+@media (hover: hover) {
+  .btn-outline:hover { background: var(--btn-bg-h, var(--btn-h)); border-color: var(--btn-h); color: var(--btn-fg-hover, var(--color-primary)); }
+  .btn-filled:hover { background: var(--btn-h); border-color: var(--btn-h); color: var(--btn-fg-hover, var(--btn-fg, #fff)); }
+}
+.btn:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+
+/* Text on the accent (primary) background is white — in light mode --text is near-black, which is unreadable on indigo */
+.bg-primary, [class*="bg-[var(--color-primary)]"] { color: #fff; }
+
 @theme inline {
-  --color-primary: #6246EA;
-  --color-secondary: #D1D1E9;
-  --color-fortext: #FFFFFF;
-  --color-backgroundcolor : #16161A;
-  --color-projectDiv : #303035;
-  
+  --color-primary: var(--accent);
+  --color-secondary: var(--surface);
+  --color-fortext: var(--text);
+  --color-backgroundcolor : var(--background);
+  --color-projectDiv : var(--surface);
+
   --breakpoint-lg : 1024px;
   --breakpoint-md : 768px;
   --breakpoint-sm : 360px;
   --breakpoint-xs : 320px;
+}
+
+/* Consistent side whitespace on every scroll section (hero excluded — it's full-bleed by design) */
+.page-section {
+  padding-inline: 10vw;
+  box-sizing: border-box;
+}
+
+/* From md (768px) up — the breakpoint where SideNav shows full labels — side
+   whitespace switches from the fluid 10vw to a strict, fixed 150px. */
+@media (min-width: 768px) {
+  .page-section {
+    padding-inline: 150px;
+  }
 }
 
 /* For Webkit browsers (Chrome, Safari) */

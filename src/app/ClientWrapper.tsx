@@ -1,18 +1,19 @@
 "use client";
 
 import Github from "@/components/icons/Github";
-// main portfolio website 
+// main portfolio website
 
 // import Logo from "@/components/Logo";
-import { qwigley } from "@/utils/font";
-import { poppins } from "@/utils/font";
+import { qwigley, workSans, sora } from "@/utils/font";
+import SideNav from "@/components/SideNav";
 
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollSmoother, ScrollTrigger, SplitText } from "gsap/all";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import Live from "@/components/icons/Live";
+import Button from "@/components/Button";
 // import { skillsType } from "./page";
 
 gsap.registerPlugin(ScrollTrigger, SplitText)
@@ -30,6 +31,7 @@ export default function Home(){
 
   const containerRef = useRef(null); // Ref for the component's container
   const timelineRef = useRef<GSAPTimeline | null>(null); // Ref to store the timeline instance
+  const [introDone, setIntroDone] = useState(false); // drives SideNav's reveal once the intro (photo) animation finishes
 
   // scoll animation and snap
   useGSAP(()=>{
@@ -103,98 +105,65 @@ export default function Home(){
             scroller : containerElement,
             start : 'top top',
             scrub : true,
-            snap : {
-              snapTo : 1,
-              duration : {
-                min : 0.4,
-                max : 0.6,
-              },
-              directional : true,
-              ease : 'power1.inOut',
-            }
           },
         })
-        gsap.to(".intro-page-content", {
+        const blurTrigger = {
+          trigger : section,
+          scroller : containerElement,
+          start : 'top top',
+          scrub : true,
+        }
+        gsap.to(".intro-page-content:not(#intro_image)", {
           filter : 'blur(10px)',
           smooth : true,
-          scrollTrigger : {
-            trigger : section,
-            scroller : containerElement,
-            start : 'top top',
-            scrub : true,
-            snap : {
-              snapTo : 1,
-              duration : {
-                min : 0.4,
-                max : 0.6,
-              },
-              directional : true,
-              ease : 'power1.inOut',
-            }
-          },
+          scrollTrigger : blurTrigger,
         })
-
-        gsap.timeline({
+        // hero blur goes through --blur so the theme brightness in .light-lift isn't frozen by an inline filter
+        gsap.to("#intro_image", {
+          "--blur" : "10px",
           smooth : true,
-          scrollTrigger : {
-            trigger : '#offer-parent',
-            scroller : containerElement,
-            start : '30% bottom',
-            end : 'bottom bottom',
-            scrub : true,
-            // snap : {
-            //   snapTo : 1,
-            //   duration : {
-            //     min : 0.4,
-            //     max : 0.6,
-            //   },
-            //   directional : true,
-            //   ease : 'power1.inOut',
-            // }
-          }
+          scrollTrigger : blurTrigger,
         })
-        .to('#offer-heading', {
-          opacity : 1,
-          ease : 'power1.in',
-        }, 0)
-        .to('#offer-div-left', {
-          x : 0,
-          ease : 'power1.in'
-        }, 0)
-        .to('#offer-div-right', {
-          x : 0,
-          ease : 'power1.in'
-        }, 0)
-      }
 
-      gsap.timeline({
-        smooth : true,
-        scrollTrigger : {
+        // image + shape are pinned (fixed), so they stay in place instead of scrolling up
+        // Opacity is set directly from scroll progress (not a tween): a tween records its start value
+        // at creation (before the intro reveals these) and left them partly faded on scroll up.
+        // Base values match where the intro leaves them (image 1, shape 0.4); progress 0 => exactly base.
+        const setFade = (p : number) => {
+          gsap.set("#intro_image", { opacity : 1 - p })
+        }
+        ScrollTrigger.create({
+          trigger : section,
+          scroller : containerElement,
+          start : 'top top',
+          end : 'bottom top',
+          onUpdate : (self) => setFade(self.progress),
+          onLeaveBack : () => setFade(0),
+        })
+
+        // shape: tilt left -> right and grow/centre over the hero->services scroll, then stays as the
+        // services background. GSAP merges the CSS classes (rotate-325, translate-y) into its own
+        // transform, so rotation/y start values must be the class values (-35deg, 10vh/7vh), not 0.
+        // fromTo (start = where the intro leaves it) because a plain .to() would record a stale start.
+        const vh = window.innerHeight / 100
+        const shapeY = (isLaptop ? 10 : 7) * vh
+        gsap.fromTo("#intro_oval_shape",
+          { rotation : -35, scale : 0.8, x : isLaptop ? -190 : 0, y : shapeY },
+          { rotation : 35, scale : 2.2, x : 0, y : shapeY - 10 * vh, ease : 'none', immediateRender : false,
+            scrollTrigger : { trigger : section, scroller : containerElement, start : 'top top', end : 'bottom top', scrub : true } }
+        )
+
+        // fade the background shape out as the skills section arrives
+        ScrollTrigger.create({
           trigger : '#skill-parent',
           scroller : containerElement,
           start : 'top bottom',
-          end : 'bottom bottom',
-          scrub : true,
-          // markers : true,
-          snap : {
-            snapTo : 1,
-            duration : {
-              min : 0.4,
-              max : 0.6,
-            },
-            directional : true,
-            ease : 'power1.inOut',
-          }
-        }
-      })
-      .to('#offer-div-left', {
-        x : '-60vw',
-        ease : 'power1.out'
-      }, 0)
-      .to('#offer-div-right', {
-        x : '60vw',
-        ease : 'power1.out'
-      }, 0)
+          end : 'top top',
+          onUpdate : (self) => gsap.set("#intro_oval_shape", { opacity : 0.4 * (1 - self.progress) }),
+        })
+
+      }
+
     })
 
       
@@ -211,6 +180,7 @@ export default function Home(){
       },
       onComplete : ()=>{
         scrollPageRef.current?.classList.remove('overflow-y-hidden');
+        setIntroDone(true);
       }
     })
 
@@ -234,7 +204,7 @@ export default function Home(){
       timelineRef.current?.to('#intro_oval_shape', {
         scale : 1,
         duration : 0.5,
-        opacity : 1,
+        opacity : 0.4,
         ease : "power1.inOut"
       }, 0)
 
@@ -328,105 +298,69 @@ export default function Home(){
   }
 
   return (
-    <div className={`${poppins.className} relative h-screen w-screen overflow-x-hidden overflow-y-hidden hide-scrollbar`} ref={scrollPageRef}>
-      {/* intro section */}
-      <div className="h-screen page-section" ref={containerRef}>
+    <div className={`${workSans.className} relative h-screen w-screen overflow-x-hidden overflow-y-hidden hide-scrollbar`} ref={scrollPageRef}>
+      {/* SideNav is nested here because nothing on scrollPageRef itself applies a
+          transform/filter/perspective; if that ever changes, move SideNav to render
+          as a sibling instead so its `fixed` positioning stays viewport-relative. */}
+      <SideNav scrollerRef={scrollPageRef} visible={introDone} />
 
-        <div className="absolute top-0 left-0 h-screen w-screen flex justify-center items-end overflow-y-hidden overflow-x-hidden intro-page">
+      {/* intro section */}
+      <div id="home" className="h-screen page-section" ref={containerRef}>
+
+        <div className="fixed top-0 left-0 h-screen w-screen flex justify-center items-end overflow-y-hidden overflow-x-hidden pointer-events-none intro-page">
           
           {/*w-[480px] h-[650px]*/}
-          <img id="intro_image" src={"/image/image.png"} className="max-h-[400px] lg:max-h-[72vh] absolute z-2 opacity-1 overflow-x-hidden intro-page-content" alt="intro_image"/>
+          <img id="intro_image" src={"/image/image.webp"} fetchPriority="high" className="light-lift max-h-[400px] lg:max-h-[72vh] absolute z-2 opacity-1 overflow-x-hidden intro-page-content" alt="intro_image"/>
           
 {/* <div id="intro_oval_shape" className="absolute lg:w-[530px] lg:h-[700px] w-[255px] h-[390px] bg-primary rounded-[60%/60%_60%_60%_60%] rotate-325 z-0 opacity-1 translate-y-[20px] overflow-x-hidden intro-page-content"/> */}
 
-          <div id="intro_oval_shape" className="absolute lg:w-[55vh] lg:h-[80vh] w-[38vh] h-[55vh] bg-primary rounded-[60%/60%_60%_60%_60%] rotate-325 z-0 opacity-1 lg:translate-y-[10vh] translate-y-[7vh] overflow-x-hidden intro-page-content"/>
+          <div id="intro_oval_shape" className="absolute lg:w-[55vh] lg:h-[80vh] w-[38vh] h-[55vh] bg-primary rounded-[60%/60%_60%_60%_60%] rotate-325 z-0 opacity-40 lg:translate-y-[10vh] translate-y-[7vh] overflow-x-hidden intro-page-content"/>
 
           {/* Name text */}
           <div id="logo_name" className={`${qwigley.className} absolute flex flex-col h-screen w-screen justify-center items-center z-1 -translate-y-[500px] opacity-0 pointer-events-none`}>
             <div id="logo_raunak_name" className="text-fortext lg:text-[30vh] xs:text-[96px] lg:-translate-y-[6vw] rotate-[350.6deg]">Raunak</div>
-            <div id="logo_agarwal_name" className="text-secondary lg:text-[25vh] xs:text-[80px] lg:-translate-y-[19vw] xs:-translate-y-[80px] rotate-[349.2deg]">Agarwal</div>
+            <div id="logo_agarwal_name" className="text-primary lg:text-[25vh] xs:text-[80px] lg:-translate-y-[19vw] xs:-translate-y-[80px] rotate-[349.2deg]">Agarwal</div>
           </div>
         </div>
 
         {/* Intro text */}
-        <div id="intro_section" className={`${poppins.className} h-screen w-screen absolute top-0 left-0 text-fortext flex flex-col gap-[30px] justify-center items-center z-4 text-center text-wrap lg:translate-x-[210px] lg:translate-y-[90px] xs:-translate-y-[8vh] opacity-0 overflow-x-hidden intro-page-content`}>
-          <p id="intro_text" className="lg:max-w-[700px] sm:max-w-[350px] xs:max-w-[300px] lg:text-[3.2vh] sm:text-[20px] xs:text-[16px]">
-            I&#39;m a <span id="last_animation_highlight" className="">full-stack developer</span> specializing in building modern, scalable web applications.
-          </p>
+        <div id="intro_section" className={`${workSans.className} h-screen w-screen absolute top-0 left-0 text-fortext flex flex-col justify-center items-center z-4 text-center text-wrap lg:translate-x-[210px] lg:translate-y-[90px] xs:-translate-y-[8vh] opacity-0 overflow-x-hidden intro-page-content`}>
+          {/* Single shared boundary: keeps both the paragraph and the button row an equal
+              distance from the right edge as the left-side gutter, accounting for the
+              fixed SideNav living in that same right-side space. Below lg (where the
+              nav is dots-only / hamburger, not a wide label column) this cap doesn't
+              apply, matching the pre-navbar mobile layout exactly. */}
+          <div className="flex flex-col items-center gap-[30px] w-full lg:max-w-[min(700px,calc(100vw-720px))]">
+            <p id="intro_text" className="w-full lg:max-w-[700px] sm:max-w-[350px] xs:max-w-[300px] lg:text-[3.2vh] sm:text-[20px] xs:text-[16px]">
+              I&#39;m a <span id="last_animation_highlight" className="">full-stack developer</span> specializing in building modern, scalable web applications.
+            </p>
 
-          <div id="button_last_animation" className="flex justify-center items-center sm:gap-6 xs:gap-2 opacity-0">
-            <a href="/resume/RaunakResume-2.pdf" download="RaunakResume.pdf">
-            <button className="lg:text-[20px] sm:text-[16px] xs:text-[12px] border md:hover:bg-secondary px-6 py-1 rounded-md md:hover:text-primary md:hover:font-semibold md:hover:border-secondary">Resume</button>
-            </a>
-            <a href="#work">
-            <button className="lg:text-[20px] sm:text-[16px] xs:text-[12px] border md:hover:bg-secondary px-6 py-1 rounded-md md:hover:text-primary md:hover:font-semibold md:hover:border-secondary">View My Work</button>
-            </a>
+            <div id="button_last_animation" className="flex flex-wrap w-full justify-center items-center sm:gap-6 xs:gap-2 opacity-0">
+              <Button href="/resume/RaunakResume-2.pdf" download="RaunakResume.pdf" label="Resume" hoverColor="var(--color-primary)" className="lg:text-[20px] sm:text-[16px] xs:text-[12px] px-6 py-1 [--btn-fg-hover:white]"/>
+              <Button href="#work" label="View My Work" hoverColor="var(--color-primary)" className="lg:text-[20px] sm:text-[16px] xs:text-[12px] px-6 py-1 [--btn-fg-hover:white]"/>
+            </div>
           </div>
         </div>
-        
+
       </div>
       
-      <div id="offer-parent" className="page-section h-screen text-white flex flex-col justify-center items-center md:gap-[10vh] xs:gap-[4vh] ">
-      {/* <div className="absolute z-1 h-screen w-screen flex justify-center items-center">
-        <div className="h-full w-0 border border-red-500"></div>
-
-        <div className="absolute left-[15%] h-full w-0 border border-red-500"></div>
-
-        <div className="absolute right-[15%] h-full w-0 border border-red-500"></div>
-      </div> */}
-
-        <div id="offer-heading" className="sm:text-[30px] xs:text-[20px] lg:text-[50px] opacity-0 xs:translate-y-[20px] md:translate-y-[0px]">How I Can Help</div>
-
-        <div className="flex flex-col md:flex-row justify-center items-center md:gap-[5vw] gap-[1vh]">
-          <div id="offer-div-left" className="-translate-x-[60vw] md:max-w-[400px] max-w-[350px] md:min-h-[68vh] xs:max-h-[36vh] rounded-md bg-primary offer-div md:p-5 p-2 text-center text">
-            <div className="md:text-[30px] xs:text-[20px] font-semibold">
-              For Clients
-            </div>
-            <div className="md:text-[20px] xs:text-[12px] mb-[8px] md:mb-[28px] mt-[8px] md:mt-[12px]">
-              I collaborate with clients to turn ideas into fast, scalable, and appealing products.
-            </div>
-            <div className="md:text-[20px] xs:text-[12px] text-left px-5">
-              💡 Custom Web Apps <div className="pl-5 text-[10px] pb-2 md:text-[16px]">Full-stack solutions tailored to your goals</div>
-              ⚡ Responsive Design <div className="pl-5 text-[10px] pb-2 md:text-[16px]">Optimized for all devices</div>
-              🔍 SEO & Speed <div className="pl-5 text-[10px] pb-2 md:text-[16px]">Fast load times, search-friendly</div>
-              🧱 Modular Codebase <div className="pl-5 text-[10px] pb-2 md:text-[16px]">Easy to scale and maintain</div>
-              🤝 Clear Communication <div className="pl-5 text-[10px] pb-2 md:text-[16px]">Regular updates and feedback</div>
-            </div>
-          </div>
-          <div id="offer-div-right" className="translate-x-[60vw] md:max-w-[400px] max-w-[350px] md:max-h-[80vh] md:min-h-[68vh] xs:max-h-[36vh] rounded-md bg-primary offer-div text-center p-2 md:p-5">
-            <div className="md:text-[30px] xs:text-[20px] font-semibold">
-              For Hiring Team
-            </div>
-            <div className="md:text-[20px] xs:text-[12px] mb-[8px] mt-[8px] md:mt-[12px] md:mb-[28px]">
-              I strive to work closely with my team, contributing honestly and supporting shared goals.
-            </div>
-            <div className="md:text-[20px] xs:text-[12px] text-left px-5">
-              🧠 Strong Core Skills<div className="pl-5 text-[10px] pb-2 md:text-[16px]">DSA + full-stack development</div>
-              ✍️ Clean Code <div className="pl-5 text-[10px] pb-2 md:text-[16px]">Focused on quality and maintainability</div>
-              🚀 Ownership<div className="pl-5 text-[10px] pb-2 md:text-[16px]">Proactive and solution-driven</div>
-              🤝 Team Player<div className="pl-5 text-[10px] pb-2 md:text-[16px]">Open to feedback, collaborative</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div id="skill-parent" className="page-section text-white flex flex-col justify-center items-center md:gap-10 xs:gap-4 xs:h-fit md:h-screen z-0">
+      <div id="skill-parent" className="page-section text-fortext flex flex-col justify-center items-center md:gap-10 xs:gap-4 xs:h-fit md:h-screen z-0">
         
         {/* Heading */}
-        <div className="md:text-[50px] text-[30px] md:mt-[0px] xs:mt-[60px] px-6 text-center">What I Bring To The Table</div>
+        <div className={`${sora.className} md:text-[50px] text-[30px] md:mt-[0px] xs:mt-[60px] px-6 text-center`}>What I Bring To The Table</div>
 
         {/* content (temporary hard-coded) */}
         <div className="flex md:flex-row flex-col md:max-h-[70vh] xs:max-h-[80vh] xs:p-8 md:p-0">
           <div className="flex flex-col flex-wrap gap-4">
             <div className="skill-box md:max-w-[30vw]">
-              <div className="lg:text-[30px] xs:text-[16px]">Problem Solving & DSA</div>
+              <div className={`${sora.className} lg:text-[30px] xs:text-[16px]`}>Problem Solving & DSA</div>
               <div  className="skill-box-content">
                 <div className="bg-[var(--color-primary)] py-2 px-4 rounded-4xl lg:text-[16px] text-[12px]">Leetcode : 450+ Questions</div>
               </div>
             </div>
 
             <div className="skill-box md:max-w-[30vw]">
-              <div className="lg:text-[30px] xs:text-[16px]" >Languages</div>
+              <div className={`${sora.className} lg:text-[30px] xs:text-[16px]`} >Languages</div>
               <div  className="skill-box-content">
                 <div className="bg-[var(--color-primary)] py-2 px-4 rounded-4xl lg:text-[16px] text-[12px]">JavaScript</div>
                 <div className="bg-[var(--color-primary)] py-2 px-4 rounded-4xl lg:text-[16px] text-[12px]">TypeScript</div>
@@ -436,7 +370,7 @@ export default function Home(){
             </div>
 
             <div className="skill-box md:max-w-[30vw]">
-              <div className="lg:text-[30px] xs:text-[16px]]">Frontend</div>
+              <div className={`${sora.className} lg:text-[30px] xs:text-[16px]`}>Frontend</div>
               <div className="skill-box-content">
                 <div className="bg-[var(--color-primary)] py-2 px-4 rounded-4xl lg:text-[16px] text-[12px]">React.js</div>
                 <div className="bg-[var(--color-primary)] py-2 px-4 rounded-4xl lg:text-[16px] text-[12px]">Next.js</div>
@@ -447,7 +381,7 @@ export default function Home(){
             </div>
 
             <div className="skill-box md:max-w-[30vw]">
-              <div className="lg:text-[30px] xs:text-[16px]">Backend</div>
+              <div className={`${sora.className} lg:text-[30px] xs:text-[16px]`}>Backend</div>
               <div  className="skill-box-content">
                 <div className="bg-[var(--color-primary)] py-2 px-4 rounded-4xl lg:text-[16px] text-[12px]">Node.js</div>
                 <div className="bg-[var(--color-primary)] py-2 px-4 rounded-4xl lg:text-[16px] text-[12px]">Next.js</div>
@@ -456,7 +390,7 @@ export default function Home(){
             </div>
 
             <div className="skill-box md:max-w-[30vw]">
-              <div className="lg:text-[30px] xs:text-[16px]">Database</div>
+              <div className={`${sora.className} lg:text-[30px] xs:text-[16px]`}>Database</div>
               <div  className="skill-box-content">
                 <div className="bg-[var(--color-primary)] py-2 px-4 rounded-4xl lg:text-[16px] text-[12px]">PostgreSQL</div>
                 <div className="bg-[var(--color-primary)] py-2 px-4 rounded-4xl lg:text-[16px] text-[12px]">MongoDB</div>
@@ -464,7 +398,7 @@ export default function Home(){
             </div>
 
             <div className="skill-box md:max-w-[30vw]">
-              <div className="lg:text-[30px] xs:text-[16px]">Machine Learning</div>
+              <div className={`${sora.className} lg:text-[30px] xs:text-[16px]`}>Machine Learning</div>
               <div  className="skill-box-content">
                 <div className="bg-[var(--color-primary)] py-2 px-4 rounded-4xl lg:text-[16px] text-[12px]">EDA (Exploratory Data Analysis)</div>
                 <div className="bg-[var(--color-primary)] py-2 px-4 rounded-4xl lg:text-[16px] text-[12px]">SQL</div>
@@ -474,7 +408,7 @@ export default function Home(){
             </div>
 
             <div className="skill-box lg:max-w-[30vw]">
-              <div className="lg:text-[30px] xs:text-[16px]">Version Control</div>
+              <div className={`${sora.className} lg:text-[30px] xs:text-[16px]`}>Version Control</div>
               <div  className="skill-box-content">
                 <div className="bg-[var(--color-primary)] py-2 px-4 rounded-4xl lg:text-[16px] text-[12px]">Git & Github</div>
               </div>
@@ -484,12 +418,12 @@ export default function Home(){
 
         {/* also show leetcode profile in a window maybe */}
       </div>
-      <div id="work" className="h-fit page-section xs:mt-[75vh] md:mt-[10vh] text-white flex flex-col gap-10 z-0">
-        <div className="md:text-[50px] text-[30px] md:mt-[0px] xs:mt-[60px] px-6 text-center">What I Have Built</div>
+      <div id="work" className="h-fit page-section xs:mt-[75vh] md:mt-[10vh] text-fortext flex flex-col gap-10 z-0">
+        <div className={`${sora.className} md:text-[50px] text-[30px] md:mt-[0px] xs:mt-[60px] px-6 text-center`}>What I Have Built</div>
 
         <div className="flex flex-col justify-center items-center gap-5">
           <div className="projectDiv md:w-[50vw] max-w-[80vw]">
-            <div className="text-[25px]">Locked In</div>
+            <div className={`${sora.className} text-[25px]`}>Locked In</div>
             <div className="text-[14px]">
               Locked In is a productivity web app that helps you stay focused and track your habits, tasks, and progress all in one place.
             </div>
@@ -501,12 +435,12 @@ export default function Home(){
               })}
             </div>
             <div className="text-[12px] flex gap-1">
-              <a href="https://github.com/Raunakaga2004/LockedIn" className="flex flex-row items-center gap-1 mt-4 hover:border-[var(--color-primary)] px-2 py-1 rounded-4xl w-fit border border-[var(--color-projectDiv)]"><Github/> GitHub</a>
+              <Button href="https://github.com/Raunakaga2004/LockedIn" icon={<Github/>} label="GitHub" color="var(--color-projectDiv)" hoverColor="var(--color-primary)" className="mt-4 px-2 py-1 rounded-4xl w-fit [--btn-bg-h:transparent] [--btn-fg-hover:var(--color-fortext)]"/>
             </div>
           </div>
 
           <div  className="projectDiv md:w-[50vw] max-w-[80vw]">
-            <div className="text-[25px]">Portfolio</div>
+            <div className={`${sora.className} text-[25px]`}>Portfolio</div>
             <div className="text-[14px]">
               It is a personal website that showcases my work, skills, and projects, with a private admin panel to update content and track performance.
             </div>
@@ -518,14 +452,14 @@ export default function Home(){
               })}
             </div>
             <div className="text-[12px] flex gap-1">
-              <a href="https://github.com/Raunakaga2004/Portfolio" className="flex flex-row items-center gap-1 mt-4 hover:border-[var(--color-primary)] px-2 py-1 rounded-4xl w-fit border border-[var(--color-projectDiv)]"><Github/> GitHub</a>
+              <Button href="https://github.com/Raunakaga2004/Portfolio" icon={<Github/>} label="GitHub" color="var(--color-projectDiv)" hoverColor="var(--color-primary)" className="mt-4 px-2 py-1 rounded-4xl w-fit [--btn-bg-h:transparent] [--btn-fg-hover:var(--color-fortext)]"/>
 
-              <a href="https://portfolio-mu-smoky-91.vercel.app/" className="flex flex-row items-center gap-1 mt-4 hover:border-[var(--color-primary)] px-2 py-1 rounded-4xl w-fit border border-[var(--color-projectDiv)]"><Live/> Live Link</a>
+              <Button href="https://portfolio-mu-smoky-91.vercel.app/" icon={<Live/>} label="Live Link" color="var(--color-projectDiv)" hoverColor="var(--color-primary)" className="mt-4 px-2 py-1 rounded-4xl w-fit [--btn-bg-h:transparent] [--btn-fg-hover:var(--color-fortext)]"/>
             </div>
           </div>
 
           <div  className="projectDiv md:w-[50vw] max-w-[80vw]">
-            <div className="text-[25px]">Sudoku Game</div>
+            <div className={`${sora.className} text-[25px]`}>Sudoku Game</div>
             <div className="text-[14px]">
               It is a console-based game that lets users play Sudoku at different difficulty levels, use pencil marks, and view solutions.
             </div>
@@ -537,12 +471,12 @@ export default function Home(){
               })}
             </div>
             <div className="text-[12px] flex gap-1">
-              <a href="https://github.com/Raunakaga2004/Sudoku-Game" className="flex flex-row items-center gap-1 mt-4 hover:border-[var(--color-primary)] px-2 py-1 rounded-4xl w-fit border border-[var(--color-projectDiv)]"><Github/> GitHub</a>
+              <Button href="https://github.com/Raunakaga2004/Sudoku-Game" icon={<Github/>} label="GitHub" color="var(--color-projectDiv)" hoverColor="var(--color-primary)" className="mt-4 px-2 py-1 rounded-4xl w-fit [--btn-bg-h:transparent] [--btn-fg-hover:var(--color-fortext)]"/>
             </div>
           </div>
 
           <div className="projectDiv md:w-[50vw] max-w-[80vw]">
-            <div className="text-[25px]">Advance Task Managing</div>
+            <div className={`${sora.className} text-[25px]`}>Advance Task Managing</div>
             <div className="text-[14px]">
               It is a console-based app that lets users manage complex tasks with unlimited nested subtasks using a linked list structure.
             </div>
@@ -554,12 +488,12 @@ export default function Home(){
               })}
             </div>
             <div className="text-[12px] flex gap-1">
-              <a href="https://github.com/Raunakaga2004/to-do-list-with-subtasks-features" className="flex flex-row items-center gap-1 mt-4 hover:border-[var(--color-primary)] px-2 py-1 rounded-4xl w-fit border border-[var(--color-projectDiv)]"><Github/> GitHub</a>
+              <Button href="https://github.com/Raunakaga2004/to-do-list-with-subtasks-features" icon={<Github/>} label="GitHub" color="var(--color-projectDiv)" hoverColor="var(--color-primary)" className="mt-4 px-2 py-1 rounded-4xl w-fit [--btn-bg-h:transparent] [--btn-fg-hover:var(--color-fortext)]"/>
             </div>
           </div>
 
           <div className="projectDiv hover-area md:w-[50vw] max-w-[80vw]">
-            <div className="text-[25px]">Compile Storm</div>
+            <div className={`${sora.className} text-[25px]`}>Compile Storm</div>
             <div className="text-[14px]">
               Compile Storm is an online code editor that lets you write, run, and test code in multiple programming languages like Java, C, C++, and Python all in one place.
             </div>
@@ -571,15 +505,15 @@ export default function Home(){
               })}
             </div>
             <div className="text-[12px] flex gap-1">
-              <a href="https://github.com/Raunakaga2004/CompileStorm" className="flex flex-row items-center gap-1 mt-4 hover:border-[var(--color-primary)] px-2 py-1 rounded-4xl w-fit border border-[var(--color-projectDiv)]"><Github/> GitHub</a>
+              <Button href="https://github.com/Raunakaga2004/CompileStorm" icon={<Github/>} label="GitHub" color="var(--color-projectDiv)" hoverColor="var(--color-primary)" className="mt-4 px-2 py-1 rounded-4xl w-fit [--btn-bg-h:transparent] [--btn-fg-hover:var(--color-fortext)]"/>
 
-              <a href="https://compilestorm-frontend.netlify.app/" className="flex flex-row items-center gap-1 mt-4 hover:border-[var(--color-primary)] px-2 py-1 rounded-4xl w-fit border border-[var(--color-projectDiv)]"><Live/> Live Link</a>
+              <Button href="https://compilestorm-frontend.netlify.app/" icon={<Live/>} label="Live Link" color="var(--color-projectDiv)" hoverColor="var(--color-primary)" className="mt-4 px-2 py-1 rounded-4xl w-fit [--btn-bg-h:transparent] [--btn-fg-hover:var(--color-fortext)]"/>
             </div>
           </div>
           {/* <img src={"/image/projects/compileStorm.png"} className="hover-image"/> */}
 
           <div className="projectDiv md:w-[50vw] max-w-[80vw]">
-            <div className="text-[25px]">PomoFocus</div>
+            <div className={`${sora.className} text-[25px]`}>PomoFocus</div>
             <div className="text-[14px]">
               It is a simple and minimalist productivity web app based on the Pomodoro technique that helps users stay focused by working in timed sessions with regular breaks.
             </div>
@@ -591,17 +525,21 @@ export default function Home(){
               })}
             </div>
             <div className="text-[12px] flex gap-1">
-              <a href="https://github.com/Raunakaga2004/PomoFocus" className="flex flex-row items-center gap-1 mt-4 hover:border-[var(--color-primary)] px-2 py-1 rounded-4xl w-fit border border-[var(--color-projectDiv)]"><Github/> GitHub</a>
+              <Button href="https://github.com/Raunakaga2004/PomoFocus" icon={<Github/>} label="GitHub" color="var(--color-projectDiv)" hoverColor="var(--color-primary)" className="mt-4 px-2 py-1 rounded-4xl w-fit [--btn-bg-h:transparent] [--btn-fg-hover:var(--color-fortext)]"/>
 
-              <a href="https://pomofocus-vxuz.onrender.com/" className="flex flex-row items-center gap-1 mt-4 hover:border-[var(--color-primary)] px-2 py-1 rounded-4xl w-fit border border-[var(--color-projectDiv)]"><Live/> Live Link</a>
+              <Button href="https://pomofocus-vxuz.onrender.com/" icon={<Live/>} label="Live Link" color="var(--color-projectDiv)" hoverColor="var(--color-primary)" className="mt-4 px-2 py-1 rounded-4xl w-fit [--btn-bg-h:transparent] [--btn-fg-hover:var(--color-fortext)]"/>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="page-section text-white h-fit flex flex-col justify-center items-center px-[10vw] xs:mt-[30vh] md:mt-[10vh]">
+      <div id="experience" className="page-section h-screen text-fortext flex flex-col justify-center items-center">
+        <div className={`${sora.className} md:text-[50px] text-[30px] px-6 text-center`}>Experience</div>
+      </div>
+
+      <div id="about" className="page-section text-fortext h-fit flex flex-col justify-center items-center xs:mt-[30vh] md:mt-[10vh]">
         {/* about me page */}
-        <div className="md:text-[50px] text-[30px] px-6 text-center">About Me</div>
+        <div className={`${sora.className} md:text-[50px] text-[30px] px-6 text-center`}>About Me</div>
         
         <div className=" flex md:flex-row flex-col-reverse justify-center items-center">
           <div className="flex flex-col justify-center items-start gap-4">
@@ -615,19 +553,22 @@ export default function Home(){
               Ready to connect? Just scroll down — I&#39;d be glad to hear from you. <br/><br/>
             </div>
 
-            <a href="mailto:raunakaga12@gmail.com" target="_blank" className="md:translate-x-[300px] border text-[20px] border-[var(--color-primary)] px-6 py-1 rounded-xl text-center hover:bg-[var(--color-secondary)] hover:border-[var(--color-secondary)] hover:text-[var(--color-primary)] hover:font-semibold xs:mx-4 md:mx-2">
-              <button>Hire Me</button>
-            </a>
+            <Button href="mailto:raunakaga12@gmail.com" target="_blank" label="Hire Me" hoverColor="var(--color-primary)" className="md:translate-x-[300px] text-[20px] px-6 py-1 [--btn-fg-hover:white] xs:mx-4 md:mx-2"/>
           </div>
 
           <div className="z-1">
-            <img src={"/image/whoami.png"} className=" overflow-x-hidden md:max-w-[800px] xs:max-w-[400px]" alt="who_am_i"/>
+            <img src={"/image/whoami.webp"} className="light-lift overflow-x-hidden md:max-w-[800px] xs:max-w-[400px]" alt="who_am_i"/>
           </div>
 
         </div>
-
-        <div className="bg-[var(--color-projectDiv)] w-screen h-fit py-2 text-center text-[var(--color-primary)] xs:mt-10 md:mt-0">Built By <div className="text-white text-[20px]">Raunak Agarwal</div></div>
       </div>
+
+      <div id="contact" className="page-section h-screen text-fortext flex flex-col justify-center items-center gap-6">
+        <div className={`${sora.className} md:text-[50px] text-[30px] px-6 text-center`}>Contact Me</div>
+        <Button href="mailto:raunakaga12@gmail.com" target="_blank" label="Email Me" hoverColor="var(--color-primary)" className="text-[20px] px-6 py-1 [--btn-fg-hover:white]"/>
+      </div>
+
+      <div className="bg-[var(--color-projectDiv)] w-screen h-fit py-2 text-center text-[var(--color-primary)] xs:mt-10 md:mt-0">Built By <div className="text-fortext text-[20px]">Raunak Agarwal</div></div>
 
       {/* <div className="page-section text-white h-fit">
 
