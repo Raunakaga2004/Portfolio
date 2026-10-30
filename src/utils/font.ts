@@ -1,6 +1,8 @@
 import { Qwigley } from "next/font/google";
 
-import { Poppins } from "next/font/google";
+import { Work_Sans } from "next/font/google";
+
+import { Sora } from "next/font/google";
 
 export const qwigley = Qwigley({
   subsets: ["latin"],
@@ -9,7 +11,12 @@ export const qwigley = Qwigley({
   display :  "swap"
 })
 
-export const poppins = Poppins({
+export const workSans = Work_Sans({
   subsets: ["latin"],
-  weight : ["400"]
+  weight : ["400", "500"]
+})
+
+export const sora = Sora({
+  subsets: ["latin"],
+  weight : ["600", "700"]
 })
