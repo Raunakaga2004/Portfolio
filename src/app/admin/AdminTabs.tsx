@@ -135,6 +135,21 @@ function PreviewPane({ iframeRef }: { iframeRef: React.RefObject<HTMLIFrameEleme
   const [selected, setSelected] = useState("Desktop");
   const [draft, setDraft] = useState<Screen>({ name: "", width: 1280, height: 800 });
   const [box, setBox] = useState({ width: 0, height: 0 });
+  const [expanded, setExpanded] = useState(false);
+
+  // While enlarged: lock the admin page's scroll behind the overlay, and Esc leaves.
+  useEffect(() => {
+    if (!expanded) return;
+    const root = document.documentElement;
+    const prevOverflow = root.style.overflow;
+    root.style.overflow = "hidden";
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setExpanded(false);
+    addEventListener("keydown", onKey);
+    return () => {
+      root.style.overflow = prevOverflow;
+      removeEventListener("keydown", onKey);
+    };
+  }, [expanded]);
   const boxRef = useRef<HTMLDivElement>(null);
 
   // Load saved screens + last selection after mount (localStorage isn't available during SSR).
@@ -186,7 +201,13 @@ function PreviewPane({ iframeRef }: { iframeRef: React.RefObject<HTMLIFrameEleme
   }
 
   return (
-    <div className="lg:sticky lg:top-8 self-start flex flex-col gap-2 h-[calc(100vh-4rem)] min-h-[400px]">
+    <div
+      className={
+        expanded
+          ? "fixed inset-0 z-50 bg-backgroundcolor p-4 flex flex-col gap-2"
+          : "relative lg:sticky lg:top-8 self-start flex flex-col gap-2 h-[calc(100vh-4rem)] min-h-[400px]"
+      }
+    >
       <div className="flex flex-wrap items-center gap-2">
         {BUILT_IN.map((d) => (
           <button
@@ -297,6 +318,29 @@ function PreviewPane({ iframeRef }: { iframeRef: React.RefObject<HTMLIFrameEleme
           />
         </div>
       </div>
+
+      {/* Same corner in both states, so it toggles back from where it was clicked. */}
+      <button
+        type="button"
+        onClick={() => setExpanded(!expanded)}
+        aria-label={expanded ? "Exit enlarged preview" : "Enlarge preview"}
+        aria-pressed={expanded}
+        className={`group absolute right-3 z-10 rounded-md border border-primary/60 bg-transparent p-1.5 text-fortext hover:border-primary bottom-3 transition-colors`}
+      >
+        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+          {expanded ? (
+            <path d="M4 14h6v6M20 10h-6V4M14 10l7-7M3 21l7-7" />
+          ) : (
+            <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
+          )}
+        </svg>
+        <span
+          role="tooltip"
+          className="pointer-events-none absolute bottom-full right-0 mb-1 whitespace-nowrap rounded bg-fortext text-backgroundcolor text-xs px-2 py-1 opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity"
+        >
+          {expanded ? "Exit enlarged preview (Esc)" : "Enlarge preview"}
+        </span>
+      </button>
     </div>
   );
 }
