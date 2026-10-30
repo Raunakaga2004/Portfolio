@@ -14,7 +14,7 @@ import { ScrollSmoother, ScrollTrigger, SplitText } from "gsap/all";
 import { Fragment, useEffect, useRef, useState } from "react";
 import Live from "@/components/icons/Live";
 import Button from "@/components/Button";
-import { imageUrl, SECTION_IDS, type Content } from "@/lib/content";
+import { imageUrl, resumeHref, SECTION_IDS, type Content } from "@/lib/content";
 
 gsap.registerPlugin(ScrollTrigger, SplitText)
 
@@ -347,7 +347,7 @@ export default function Home({ content: initialContent }: { content: Content }){
             </p>
 
             <div id="button_last_animation" className="flex flex-wrap w-full justify-center items-center sm:gap-6 xs:gap-2 opacity-0">
-              <Button href={home.resumeUrl} download="RaunakResume.pdf" label="Resume" hoverColor="var(--color-primary)" className="lg:text-[20px] sm:text-[16px] xs:text-[12px] px-6 py-1 [--btn-fg-hover:white]"/>
+              <Button href={resumeHref(home.resumeUrl)} download="RaunakResume.pdf" label="Resume" hoverColor="var(--color-primary)" className="lg:text-[20px] sm:text-[16px] xs:text-[12px] px-6 py-1 [--btn-fg-hover:white]"/>
               <Button href="#work" label="View My Work" hoverColor="var(--color-primary)" className="lg:text-[20px] sm:text-[16px] xs:text-[12px] px-6 py-1 [--btn-fg-hover:white]"/>
             </div>
           </div>

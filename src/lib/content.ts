@@ -84,6 +84,12 @@ export const SECTION_IDS: Record<SectionKey, string> = {
 
 export const imageUrl = (key: string) => `/api/assets/${key}`;
 
+// Google Drive share links (…/file/d/ID/view, …/open?id=ID) open the viewer; rewrite them to a direct download.
+export const resumeHref = (url: string) => {
+  const id = url.includes("drive.google.com") && url.match(/\/d\/([\w-]+)|[?&]id=([\w-]+)/);
+  return id ? `https://drive.google.com/uc?export=download&id=${id[1] ?? id[2]}` : url;
+};
+
 // Seed data + fallback: the content that used to be hardcoded in ClientWrapper.tsx.
 export const DEFAULT_CONTENT: Content = {
   home: {

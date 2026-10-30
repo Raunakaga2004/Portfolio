@@ -378,7 +378,7 @@ function SectionForm({ tab, content, patch }: { tab: SectionKey; content: Conten
           <Field label="Intro text before highlight" value={c.introPrefix} onChange={(v) => patch("home", { introPrefix: v })} />
           <Field label="Highlighted text" value={c.highlight} onChange={(v) => patch("home", { highlight: v })} />
           <Field label="Intro text after highlight" value={c.introSuffix} onChange={(v) => patch("home", { introSuffix: v })} />
-          <Field label="Resume URL / path" value={c.resumeUrl} onChange={(v) => patch("home", { resumeUrl: v })} />
+          <Field label="Resume URL / path (Google Drive share link works)" value={c.resumeUrl} onChange={(v) => patch("home", { resumeUrl: v })} />
           <ImageField label="Hero image" value={c.imageKey} fallback="/image/image.webp" onChange={(k) => patch("home", { imageKey: k })} />
         </>
       );
