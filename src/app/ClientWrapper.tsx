@@ -11,27 +11,44 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollSmoother, ScrollTrigger, SplitText } from "gsap/all";
 
-import { useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import Live from "@/components/icons/Live";
 import Button from "@/components/Button";
-// import { skillsType } from "./page";
+import { imageUrl, SECTION_IDS, type Content } from "@/lib/content";
 
 gsap.registerPlugin(ScrollTrigger, SplitText)
 
-// interface skillMapType {
-//   allSkills : Map<string, skillsType[]>;
-// }
+export default function Home({ content: initialContent }: { content: Content }){
+  const [content, setContent] = useState(initialContent);
+  // Preview: section to scroll to once the intro animation has finished (object so repeats still fire).
+  const [scrollTarget, setScrollTarget] = useState<{ id: string } | null>(null);
 
-// export default function Home({allSkills}: skillMapType) {
-export default function Home(){
-
-  // console.log(categories)
+  // Admin preview: /admin renders this page in an iframe at /?preview=1 and posts unsaved form values.
+  useEffect(() => {
+    if (!new URLSearchParams(location.search).has("preview")) return;
+    history.scrollRestoration = "manual"; // a reload always starts at the home section
+    const onMessage = (e: MessageEvent) => {
+      if (e.origin === location.origin && e.data?.type === "preview-content") {
+        setContent(e.data.content);
+        if (e.data.scrollTo) setScrollTarget({ id: e.data.scrollTo });
+      }
+    };
+    addEventListener("message", onMessage);
+    parent.postMessage({ type: "preview-ready" }, location.origin);
+    return () => removeEventListener("message", onMessage);
+  }, []);
 
   const scrollPageRef = useRef<HTMLDivElement>(null);
 
   const containerRef = useRef(null); // Ref for the component's container
   const timelineRef = useRef<GSAPTimeline | null>(null); // Ref to store the timeline instance
   const [introDone, setIntroDone] = useState(false); // drives SideNav's reveal once the intro (photo) animation finishes
+
+  // Preview: wait for the intro to finish, then glide to the requested section.
+  useEffect(() => {
+    if (!introDone || !scrollTarget) return;
+    requestAnimationFrame(() => document.getElementById(scrollTarget.id)?.scrollIntoView({ behavior: "smooth" }));
+  }, [introDone, scrollTarget]);
 
   // scoll animation and snap
   useGSAP(()=>{
@@ -153,9 +170,9 @@ export default function Home(){
             scrollTrigger : { trigger : section, scroller : containerElement, start : 'top top', end : 'bottom top', scrub : true } }
         )
 
-        // fade the background shape out as the skills section arrives
-        ScrollTrigger.create({
-          trigger : '#skill-parent',
+        // fade the background shape out as the next section (skills, unless hidden) arrives
+        if (sections[1]) ScrollTrigger.create({
+          trigger : sections[1],
           scroller : containerElement,
           start : 'top bottom',
           end : 'top top',
@@ -288,21 +305,17 @@ export default function Home(){
   })
 
 
-  const projectTechStack = {
-    lockedIn : ['React', 'TypeScript', 'Zod', 'JWT', 'Node.js', 'Express', 'Prisma', 'PostgreSQL', 'TailwindCSS'],
-    portfolio : ['Next.js', 'TypeScript', 'NextAuth', 'Node.js', 'TailwindCSS'],
-    sudokuGame : ['Core JAVA', 'Backtracking', 'Recursion', 'Stack'],
-    taskManging : ['Core JAVA', 'Nested Linked List', 'ArrayList'],
-    compileStorm : ['React', 'JavaScript', 'Zod', 'JWT', 'Node.js', 'Express', 'Mongoose', 'MongoDB', 'TailwindCSS', 'Monaco Editor'],
-    pomofocus : ['React', 'TailwindCSS']
-  }
+  const { home, skills, work, experience, about, contact } = content;
+  const hiddenIds = (["skills", "work", "experience", "about", "contact"] as const)
+    .filter((k) => !content[k].visible)
+    .map((k) => SECTION_IDS[k]);
 
   return (
     <div className={`${workSans.className} relative h-screen w-screen overflow-x-hidden overflow-y-hidden hide-scrollbar snap-container`} ref={scrollPageRef}>
       {/* SideNav is nested here because nothing on scrollPageRef itself applies a
           transform/filter/perspective; if that ever changes, move SideNav to render
           as a sibling instead so its `fixed` positioning stays viewport-relative. */}
-      <SideNav scrollerRef={scrollPageRef} visible={introDone} />
+      <SideNav scrollerRef={scrollPageRef} visible={introDone} hiddenIds={hiddenIds} />
 
       {/* intro section */}
       <div id="home" className="h-screen page-section" ref={containerRef}>
@@ -310,9 +323,7 @@ export default function Home(){
         <div className="fixed top-0 left-0 h-screen w-screen flex justify-center items-end overflow-y-hidden overflow-x-hidden pointer-events-none intro-page">
           
           {/*w-[480px] h-[650px]*/}
-          <img id="intro_image" src={"/image/image.webp"} fetchPriority="high" className="light-lift max-h-[400px] lg:max-h-[72vh] absolute z-2 opacity-1 overflow-x-hidden intro-page-content" alt="intro_image"/>
-          
-{/* <div id="intro_oval_shape" className="absolute lg:w-[530px] lg:h-[700px] w-[255px] h-[390px] bg-primary rounded-[60%/60%_60%_60%_60%] rotate-325 z-0 opacity-1 translate-y-[20px] overflow-x-hidden intro-page-content"/> */}
+          <img id="intro_image" src={home.imageKey ? imageUrl(home.imageKey) : "/image/image.webp"} fetchPriority="high" className="light-lift max-h-[400px] lg:max-h-[72vh] absolute z-2 opacity-1 overflow-x-hidden intro-page-content" alt="intro_image"/>
 
           <div id="intro_oval_shape" className="absolute lg:w-[55vh] lg:h-[80vh] w-[38vh] h-[55vh] bg-primary rounded-[60%/60%_60%_60%_60%] rotate-325 z-0 opacity-40 lg:translate-y-[10vh] translate-y-[7vh] overflow-x-hidden intro-page-content"/>
 
@@ -332,11 +343,11 @@ export default function Home(){
               apply, matching the pre-navbar mobile layout exactly. */}
           <div className="flex flex-col items-center gap-[30px] w-full lg:max-w-[min(700px,calc(100vw-720px))]">
             <p id="intro_text" className="w-full lg:max-w-[700px] sm:max-w-[350px] xs:max-w-[300px] lg:text-[3.2vh] sm:text-[20px] xs:text-[16px]">
-              I&#39;m a <span id="last_animation_highlight" className="">full-stack developer</span> specializing in building modern, scalable web applications.
+              {home.introPrefix} <span id="last_animation_highlight" className="">{home.highlight}</span> {home.introSuffix}
             </p>
 
             <div id="button_last_animation" className="flex flex-wrap w-full justify-center items-center sm:gap-6 xs:gap-2 opacity-0">
-              <Button href="/resume/RaunakResume-2.pdf" download="RaunakResume.pdf" label="Resume" hoverColor="var(--color-primary)" className="lg:text-[20px] sm:text-[16px] xs:text-[12px] px-6 py-1 [--btn-fg-hover:white]"/>
+              <Button href={home.resumeUrl} download="RaunakResume.pdf" label="Resume" hoverColor="var(--color-primary)" className="lg:text-[20px] sm:text-[16px] xs:text-[12px] px-6 py-1 [--btn-fg-hover:white]"/>
               <Button href="#work" label="View My Work" hoverColor="var(--color-primary)" className="lg:text-[20px] sm:text-[16px] xs:text-[12px] px-6 py-1 [--btn-fg-hover:white]"/>
             </div>
           </div>
@@ -344,257 +355,87 @@ export default function Home(){
 
       </div>
       
-      <div id="skill-parent" className="page-section text-fortext flex flex-col justify-center items-center md:gap-10 xs:gap-4 xs:h-fit md:h-screen z-0">
+      {skills.visible && <div id="skill-parent" className="page-section text-fortext flex flex-col justify-center items-center md:gap-10 xs:gap-4 xs:h-fit md:h-screen z-0">
         
         {/* Heading */}
-        <div className={`${sora.className} md:text-[50px] text-[30px] md:mt-[0px] xs:mt-[60px] px-6 text-center`}>What I Bring To The Table</div>
+        <div className={`${sora.className} md:text-[50px] text-[30px] md:mt-[0px] xs:mt-[60px] px-6 text-center`}>{skills.heading}</div>
 
-        {/* content (temporary hard-coded) */}
         <div className="flex md:flex-row flex-col md:max-h-[70vh] xs:max-h-[80vh] xs:p-8 md:p-0">
           <div className="flex flex-col flex-wrap gap-4">
-            <div className="skill-box md:max-w-[30vw]">
-              <div className={`${sora.className} lg:text-[30px] xs:text-[16px]`}>Problem Solving & DSA</div>
-              <div  className="skill-box-content">
-                <div className="bg-[var(--color-primary)] py-2 px-4 rounded-4xl lg:text-[16px] text-[12px]">Leetcode : 450+ Questions</div>
+            {skills.groups.filter((g) => g.visible).map((group, i) => (
+              <div key={i} className="skill-box md:max-w-[30vw]">
+                <div className={`${sora.className} lg:text-[30px] xs:text-[16px]`}>{group.title}</div>
+                <div className="skill-box-content">
+                  {group.items.map((item, j) => (
+                    <div key={j} className="bg-[var(--color-primary)] py-2 px-4 rounded-4xl lg:text-[16px] text-[12px]">{item}</div>
+                  ))}
+                </div>
               </div>
-            </div>
-
-            <div className="skill-box md:max-w-[30vw]">
-              <div className={`${sora.className} lg:text-[30px] xs:text-[16px]`} >Languages</div>
-              <div  className="skill-box-content">
-                <div className="bg-[var(--color-primary)] py-2 px-4 rounded-4xl lg:text-[16px] text-[12px]">JavaScript</div>
-                <div className="bg-[var(--color-primary)] py-2 px-4 rounded-4xl lg:text-[16px] text-[12px]">TypeScript</div>
-                <div className="bg-[var(--color-primary)] py-2 px-4 rounded-4xl lg:text-[16px] text-[12px]">Java</div>
-                <div className="bg-[var(--color-primary)] py-2 px-4 rounded-4xl lg:text-[16px] text-[12px]">Python</div>
-              </div>
-            </div>
-
-            <div className="skill-box md:max-w-[30vw]">
-              <div className={`${sora.className} lg:text-[30px] xs:text-[16px]`}>Frontend</div>
-              <div className="skill-box-content">
-                <div className="bg-[var(--color-primary)] py-2 px-4 rounded-4xl lg:text-[16px] text-[12px]">React.js</div>
-                <div className="bg-[var(--color-primary)] py-2 px-4 rounded-4xl lg:text-[16px] text-[12px]">Next.js</div>
-                <div className="bg-[var(--color-primary)] py-2 px-4 rounded-4xl lg:text-[16px] text-[12px]">TailwindCSS</div>
-                <div className="bg-[var(--color-primary)] py-2 px-4 rounded-4xl lg:text-[16px] text-[12px]">GSAP</div>
-                <div className="bg-[var(--color-primary)] py-2 px-4 rounded-4xl lg:text-[16px] text-[12px]">Figma</div>
-              </div>
-            </div>
-
-            <div className="skill-box md:max-w-[30vw]">
-              <div className={`${sora.className} lg:text-[30px] xs:text-[16px]`}>Backend</div>
-              <div  className="skill-box-content">
-                <div className="bg-[var(--color-primary)] py-2 px-4 rounded-4xl lg:text-[16px] text-[12px]">Node.js</div>
-                <div className="bg-[var(--color-primary)] py-2 px-4 rounded-4xl lg:text-[16px] text-[12px]">Next.js</div>
-                <div className="bg-[var(--color-primary)] py-2 px-4 rounded-4xl lg:text-[16px] text-[12px]">Web Sockets</div>
-              </div>
-            </div>
-
-            <div className="skill-box md:max-w-[30vw]">
-              <div className={`${sora.className} lg:text-[30px] xs:text-[16px]`}>Database</div>
-              <div  className="skill-box-content">
-                <div className="bg-[var(--color-primary)] py-2 px-4 rounded-4xl lg:text-[16px] text-[12px]">PostgreSQL</div>
-                <div className="bg-[var(--color-primary)] py-2 px-4 rounded-4xl lg:text-[16px] text-[12px]">MongoDB</div>
-              </div>
-            </div>
-
-            <div className="skill-box md:max-w-[30vw]">
-              <div className={`${sora.className} lg:text-[30px] xs:text-[16px]`}>Machine Learning</div>
-              <div  className="skill-box-content">
-                <div className="bg-[var(--color-primary)] py-2 px-4 rounded-4xl lg:text-[16px] text-[12px]">EDA (Exploratory Data Analysis)</div>
-                <div className="bg-[var(--color-primary)] py-2 px-4 rounded-4xl lg:text-[16px] text-[12px]">SQL</div>
-                <div className="bg-[var(--color-primary)] py-2 px-4 rounded-4xl lg:text-[16px] text-[12px]">Supervised Learning</div>
-                <div className="bg-[var(--color-primary)] py-2 px-4 rounded-4xl lg:text-[16px] text-[12px]">Unsupervised Learning</div>
-              </div>
-            </div>
-
-            <div className="skill-box lg:max-w-[30vw]">
-              <div className={`${sora.className} lg:text-[30px] xs:text-[16px]`}>Version Control</div>
-              <div  className="skill-box-content">
-                <div className="bg-[var(--color-primary)] py-2 px-4 rounded-4xl lg:text-[16px] text-[12px]">Git & Github</div>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
 
         {/* also show leetcode profile in a window maybe */}
-      </div>
-      <div id="work" className="h-fit page-section xs:mt-[75vh] md:mt-[10vh] text-fortext flex flex-col gap-10 z-0">
-        <div className={`${sora.className} md:text-[50px] text-[30px] md:mt-[0px] xs:mt-[60px] px-6 text-center`}>What I Have Built</div>
+      </div>}
+
+      {work.visible && <div id="work" className="h-fit page-section xs:mt-[75vh] md:mt-[10vh] text-fortext flex flex-col gap-10 z-0">
+        <div className={`${sora.className} md:text-[50px] text-[30px] md:mt-[0px] xs:mt-[60px] px-6 text-center`}>{work.heading}</div>
 
         <div className="flex flex-col justify-center items-center gap-5">
-          <div className="projectDiv md:w-[50vw] max-w-[80vw]">
-            <div className={`${sora.className} text-[25px]`}>Locked In</div>
-            <div className="text-[14px]">
-              Locked In is a productivity web app that helps you stay focused and track your habits, tasks, and progress all in one place.
+          {work.projects.filter((p) => p.visible).map((project, i) => (
+            <div key={i} className="projectDiv md:w-[50vw] max-w-[80vw]">
+              {project.imageKey && <img src={imageUrl(project.imageKey)} alt={project.title} className="rounded-lg w-full object-cover"/>}
+              <div className={`${sora.className} text-[25px]`}>{project.title}</div>
+              <div className="text-[14px]">{project.description}</div>
+              <div className="flex flex-wrap gap-1">
+                {project.tech.map((tech, j) => (
+                  <div key={j} className="bg-[var(--color-primary)] py-2 px-4 rounded-4xl text-[12px]">{tech}</div>
+                ))}
+              </div>
+              <div className="text-[12px] flex gap-1">
+                {project.githubUrl && <Button href={project.githubUrl} icon={<Github/>} label="GitHub" color="var(--color-projectDiv)" hoverColor="var(--color-primary)" className="mt-4 px-2 py-1 rounded-4xl w-fit [--btn-bg-h:transparent] [--btn-fg-hover:var(--color-fortext)]"/>}
+                {project.liveUrl && <Button href={project.liveUrl} icon={<Live/>} label="Live Link" color="var(--color-projectDiv)" hoverColor="var(--color-primary)" className="mt-4 px-2 py-1 rounded-4xl w-fit [--btn-bg-h:transparent] [--btn-fg-hover:var(--color-fortext)]"/>}
+              </div>
             </div>
-            <div className="flex flex-wrap gap-1">
-              {projectTechStack.lockedIn.map((tech)=>{
-                return <div key={tech} className="bg-[var(--color-primary)] py-2 px-4 rounded-4xl text-[12px]">
-                  {tech}
-                </div>
-              })}
-            </div>
-            <div className="text-[12px] flex gap-1">
-              <Button href="https://github.com/Raunakaga2004/LockedIn" icon={<Github/>} label="GitHub" color="var(--color-projectDiv)" hoverColor="var(--color-primary)" className="mt-4 px-2 py-1 rounded-4xl w-fit [--btn-bg-h:transparent] [--btn-fg-hover:var(--color-fortext)]"/>
-            </div>
-          </div>
-
-          <div  className="projectDiv md:w-[50vw] max-w-[80vw]">
-            <div className={`${sora.className} text-[25px]`}>Portfolio</div>
-            <div className="text-[14px]">
-              It is a personal website that showcases my work, skills, and projects, with a private admin panel to update content and track performance.
-            </div>
-            <div className="flex flex-wrap gap-1">
-              {projectTechStack.portfolio.map((tech)=>{
-                return <div key={tech} className="bg-[var(--color-primary)] py-2 px-4 rounded-4xl text-[12px]">
-                  {tech}
-                </div>
-              })}
-            </div>
-            <div className="text-[12px] flex gap-1">
-              <Button href="https://github.com/Raunakaga2004/Portfolio" icon={<Github/>} label="GitHub" color="var(--color-projectDiv)" hoverColor="var(--color-primary)" className="mt-4 px-2 py-1 rounded-4xl w-fit [--btn-bg-h:transparent] [--btn-fg-hover:var(--color-fortext)]"/>
-
-              <Button href="https://portfolio-mu-smoky-91.vercel.app/" icon={<Live/>} label="Live Link" color="var(--color-projectDiv)" hoverColor="var(--color-primary)" className="mt-4 px-2 py-1 rounded-4xl w-fit [--btn-bg-h:transparent] [--btn-fg-hover:var(--color-fortext)]"/>
-            </div>
-          </div>
-
-          <div  className="projectDiv md:w-[50vw] max-w-[80vw]">
-            <div className={`${sora.className} text-[25px]`}>Sudoku Game</div>
-            <div className="text-[14px]">
-              It is a console-based game that lets users play Sudoku at different difficulty levels, use pencil marks, and view solutions.
-            </div>
-            <div className="flex flex-wrap gap-1">
-              {projectTechStack.sudokuGame.map((tech)=>{
-                return <div key={tech} className="bg-[var(--color-primary)] py-2 px-4 rounded-4xl text-[12px]">
-                  {tech}
-                </div>
-              })}
-            </div>
-            <div className="text-[12px] flex gap-1">
-              <Button href="https://github.com/Raunakaga2004/Sudoku-Game" icon={<Github/>} label="GitHub" color="var(--color-projectDiv)" hoverColor="var(--color-primary)" className="mt-4 px-2 py-1 rounded-4xl w-fit [--btn-bg-h:transparent] [--btn-fg-hover:var(--color-fortext)]"/>
-            </div>
-          </div>
-
-          <div className="projectDiv md:w-[50vw] max-w-[80vw]">
-            <div className={`${sora.className} text-[25px]`}>Advance Task Managing</div>
-            <div className="text-[14px]">
-              It is a console-based app that lets users manage complex tasks with unlimited nested subtasks using a linked list structure.
-            </div>
-            <div className="flex flex-wrap gap-1">
-              {projectTechStack.taskManging.map((tech)=>{
-                return <div key={tech} className="bg-[var(--color-primary)] py-2 px-4 rounded-4xl text-[12px]">
-                  {tech}
-                </div>
-              })}
-            </div>
-            <div className="text-[12px] flex gap-1">
-              <Button href="https://github.com/Raunakaga2004/to-do-list-with-subtasks-features" icon={<Github/>} label="GitHub" color="var(--color-projectDiv)" hoverColor="var(--color-primary)" className="mt-4 px-2 py-1 rounded-4xl w-fit [--btn-bg-h:transparent] [--btn-fg-hover:var(--color-fortext)]"/>
-            </div>
-          </div>
-
-          <div className="projectDiv hover-area md:w-[50vw] max-w-[80vw]">
-            <div className={`${sora.className} text-[25px]`}>Compile Storm</div>
-            <div className="text-[14px]">
-              Compile Storm is an online code editor that lets you write, run, and test code in multiple programming languages like Java, C, C++, and Python all in one place.
-            </div>
-           <div className="flex flex-wrap gap-1">
-              {projectTechStack.compileStorm.map((tech)=>{
-                return <div key={tech} className="bg-[var(--color-primary)] py-2 px-4 rounded-4xl text-[12px]">
-                  {tech}
-                </div>
-              })}
-            </div>
-            <div className="text-[12px] flex gap-1">
-              <Button href="https://github.com/Raunakaga2004/CompileStorm" icon={<Github/>} label="GitHub" color="var(--color-projectDiv)" hoverColor="var(--color-primary)" className="mt-4 px-2 py-1 rounded-4xl w-fit [--btn-bg-h:transparent] [--btn-fg-hover:var(--color-fortext)]"/>
-
-              <Button href="https://compilestorm-frontend.netlify.app/" icon={<Live/>} label="Live Link" color="var(--color-projectDiv)" hoverColor="var(--color-primary)" className="mt-4 px-2 py-1 rounded-4xl w-fit [--btn-bg-h:transparent] [--btn-fg-hover:var(--color-fortext)]"/>
-            </div>
-          </div>
-          {/* <img src={"/image/projects/compileStorm.png"} className="hover-image"/> */}
-
-          <div className="projectDiv md:w-[50vw] max-w-[80vw]">
-            <div className={`${sora.className} text-[25px]`}>PomoFocus</div>
-            <div className="text-[14px]">
-              It is a simple and minimalist productivity web app based on the Pomodoro technique that helps users stay focused by working in timed sessions with regular breaks.
-            </div>
-            <div className="flex flex-wrap gap-1">
-              {projectTechStack.pomofocus.map((tech)=>{
-                return <div key={tech} className="bg-[var(--color-primary)] py-2 px-4 rounded-4xl text-[12px]">
-                  {tech}
-                </div>
-              })}
-            </div>
-            <div className="text-[12px] flex gap-1">
-              <Button href="https://github.com/Raunakaga2004/PomoFocus" icon={<Github/>} label="GitHub" color="var(--color-projectDiv)" hoverColor="var(--color-primary)" className="mt-4 px-2 py-1 rounded-4xl w-fit [--btn-bg-h:transparent] [--btn-fg-hover:var(--color-fortext)]"/>
-
-              <Button href="https://pomofocus-vxuz.onrender.com/" icon={<Live/>} label="Live Link" color="var(--color-projectDiv)" hoverColor="var(--color-primary)" className="mt-4 px-2 py-1 rounded-4xl w-fit [--btn-bg-h:transparent] [--btn-fg-hover:var(--color-fortext)]"/>
-            </div>
-          </div>
+          ))}
         </div>
-      </div>
+      </div>}
 
-      <div id="experience" className="page-section h-screen text-fortext flex flex-col justify-center items-center">
-        <div className={`${sora.className} md:text-[50px] text-[30px] px-6 text-center`}>Experience</div>
-      </div>
+      {experience.visible && <div id="experience" className="page-section h-screen text-fortext flex flex-col justify-center items-center gap-5">
+        <div className={`${sora.className} md:text-[50px] text-[30px] px-6 text-center`}>{experience.heading}</div>
+        {experience.items.filter((e) => e.visible).map((item, i) => (
+          <div key={i} className="projectDiv md:w-[50vw] max-w-[80vw]">
+            <div className={`${sora.className} text-[25px]`}>{item.role}</div>
+            <div className="text-[14px]">{item.company} · {item.start} – {item.end || "Present"}</div>
+            {item.description && <div className="text-[14px] whitespace-pre-line">{item.description}</div>}
+          </div>
+        ))}
+      </div>}
 
-      <div id="about" className="page-section text-fortext h-fit flex flex-col justify-center items-center xs:mt-[30vh] md:mt-[10vh]">
+      {about.visible && <div id="about" className="page-section text-fortext h-fit flex flex-col justify-center items-center xs:mt-[30vh] md:mt-[10vh]">
         {/* about me page */}
-        <div className={`${sora.className} md:text-[50px] text-[30px] px-6 text-center`}>About Me</div>
+        <div className={`${sora.className} md:text-[50px] text-[30px] px-6 text-center`}>{about.heading}</div>
         
         <div className=" flex md:flex-row flex-col-reverse justify-center items-center">
           <div className="flex flex-col justify-center items-start gap-4">
             <div className="bg-[var(--color-primary)] md:w-[40vw] z-0 p-[30px] px-[50px] rounded-lg">
-               Hey, I&#39;m Raunak — a full-stack developer passionate about building tools that boost productivity and solve real problems. <br/> <br/>
-
-              My journey began with a curiosity for how things work under the hood, which led me to explore everything from Java and web development to machine learning and system design. I enjoy taking on challenges that require both creative problem-solving and solid engineering. <br/> <br/> 
-
-              When I&#39;m not coding, you&#39;ll probably find me working out, reading about brilliant minds like Turing or Ramanujan, or refining side projects that keep me sharp. <br/> <br/>
-
-              Ready to connect? Just scroll down — I&#39;d be glad to hear from you. <br/><br/>
+              {about.paragraphs.map((p, i) => (
+                <Fragment key={i}>{p} <br/> <br/></Fragment>
+              ))}
             </div>
 
-            <Button href="mailto:raunakaga12@gmail.com" target="_blank" label="Hire Me" hoverColor="var(--color-primary)" className="text-[20px] px-6 py-1 [--btn-fg-hover:white] xs:mx-4 md:mx-2"/>
+            <Button href={`mailto:${about.email}`} target="_blank" label={about.ctaLabel} hoverColor="var(--color-primary)" className="text-[20px] px-6 py-1 [--btn-fg-hover:white] xs:mx-4 md:mx-2"/>
           </div>
 
         </div>
-      </div>
+      </div>}
 
-      <div id="contact" className="page-section h-screen text-fortext flex flex-col justify-center items-center gap-6">
-        <div className={`${sora.className} md:text-[50px] text-[30px] px-6 text-center`}>Contact Me</div>
-        <Button href="mailto:raunakaga12@gmail.com" target="_blank" label="Email Me" hoverColor="var(--color-primary)" className="text-[20px] px-6 py-1 [--btn-fg-hover:white]"/>
-      </div>
+      {contact.visible && <div id="contact" className="page-section h-screen text-fortext flex flex-col justify-center items-center gap-6">
+        <div className={`${sora.className} md:text-[50px] text-[30px] px-6 text-center`}>{contact.heading}</div>
+        <Button href={`mailto:${contact.email}`} target="_blank" label={contact.buttonLabel} hoverColor="var(--color-primary)" className="text-[20px] px-6 py-1 [--btn-fg-hover:white]"/>
+      </div>}
 
       <div className="bg-[var(--color-projectDiv)] w-screen h-fit py-2 text-center text-[var(--color-primary)] xs:mt-10 md:mt-0">Built By <div className="text-fortext text-[20px]">Raunak Agarwal</div></div>
-
-      {/* <div className="page-section text-white h-fit">
-
-        <div>
-          Lets Build Something Together
-        </div>
-      </div> */}
-
-      {/* <div className="page-section h-screen text-white">
-        projects section
-      </div>
-
-      <div className="page-section h-screen text-white">
-        contact section
-      </div>
-
-      <div className="page-section h-screen text-white">
-        footer section
-      </div> */}
     </div>
   );
 }
-
-{/* {[...allSkills.entries()].map(([key, value]) => (
-          <div key={key}>
-            <div>{key}</div>
-            {value.map((skill)=> (
-              <div key={skill.id}>
-                {skill.name}
-              </div>
-            ))}
-          </div>
-        ))} */}

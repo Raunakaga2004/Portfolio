@@ -11,6 +11,8 @@ interface SideNavProps {
   scrollerRef: React.RefObject<HTMLDivElement | null>;
   /** Whether the nav should be visible yet — held back until the intro (photo) animation finishes. */
   visible: boolean;
+  /** Section ids hidden from the admin panel — left out of the nav. */
+  hiddenIds?: string[];
 }
 
 const NAV_ITEMS = [
@@ -38,7 +40,8 @@ function CloseIcon() {
   );
 }
 
-export default function SideNav({ scrollerRef, visible }: SideNavProps) {
+export default function SideNav({ scrollerRef, visible, hiddenIds = [] }: SideNavProps) {
+  const navItems = NAV_ITEMS.filter(({ id }) => !hiddenIds.includes(id));
   const [activeId, setActiveId] = useState<string>("home");
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -133,7 +136,7 @@ export default function SideNav({ scrollerRef, visible }: SideNavProps) {
           visible ? "opacity-100" : "opacity-0 pointer-events-none"
         }`}
       >
-        {NAV_ITEMS.map(({ id, label }) => {
+        {navItems.map(({ id, label }) => {
           const isActive = activeId === id;
           return (
             <button
@@ -182,7 +185,7 @@ export default function SideNav({ scrollerRef, visible }: SideNavProps) {
           onClick={() => setMenuOpen(false)}
           className="fixed inset-0 z-40 md:hidden flex flex-col items-center justify-center gap-8 bg-backgroundcolor/95 backdrop-blur-sm"
         >
-          {NAV_ITEMS.map(({ id, label }) => {
+          {navItems.map(({ id, label }) => {
             const isActive = activeId === id;
             return (
               <button
