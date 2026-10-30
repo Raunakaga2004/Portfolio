@@ -3,12 +3,14 @@ import { revalidatePath } from "next/cache";
 import { WebStandardStreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/webStandardStreamableHttp.js";
 import { createMcpServer } from "@/lib/mcp";
 
-// Remote MCP endpoint: POST /api/mcp with `Authorization: Bearer $MCP_TOKEN`. Fails closed if MCP_TOKEN is unset.
+// Remote MCP endpoint: POST /api/mcp with `Authorization: Bearer $MCP_TOKEN`, or `?token=$MCP_TOKEN` for clients
+// that can't set headers (claude.ai connectors). Fails closed if MCP_TOKEN is unset.
+// ponytail: token in URL can land in access logs; switch to OAuth if that matters.
 const hash = (s: string) => createHash("sha256").update(s).digest();
 
 function authorized(req: Request) {
   const token = process.env.MCP_TOKEN;
-  const given = req.headers.get("authorization")?.replace(/^Bearer /, "");
+  const given = req.headers.get("authorization")?.replace(/^Bearer /, "") ?? new URL(req.url).searchParams.get("token");
   return !!token && !!given && timingSafeEqual(hash(given), hash(token));
 }
 
