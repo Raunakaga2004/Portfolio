@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "portfolio-admin": {
+      "command": "npm",
+      "args": ["run", "--silent", "mcp"]
+    }
+  }
+}
