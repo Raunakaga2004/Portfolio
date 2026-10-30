@@ -355,15 +355,16 @@ export default function Home({ content: initialContent }: { content: Content }){
 
       </div>
       
-      {skills.visible && <div id="skill-parent" className="page-section text-fortext flex flex-col justify-center items-center md:gap-10 xs:gap-4 xs:h-fit md:h-screen z-0">
-        
+      {skills.visible && <div id="skill-parent" className="page-section text-fortext flex flex-col justify-center items-center md:gap-10 xs:gap-4 xs:h-fit md:min-h-screen z-0">
+
         {/* Heading */}
         <div className={`${sora.className} md:text-[50px] text-[30px] md:mt-[0px] xs:mt-[60px] px-6 text-center`}>{skills.heading}</div>
 
-        <div className="flex md:flex-row flex-col md:max-h-[70vh] xs:max-h-[80vh] xs:p-8 md:p-0">
-          <div className="flex flex-col flex-wrap gap-4">
+        {/* CSS columns: extra groups grow downward instead of wrapping into new columns off-screen */}
+        <div className="w-full md:w-[75vw] xs:p-8 md:p-0">
+          <div className="columns-1 md:columns-2 lg:columns-3 gap-4">
             {skills.groups.filter((g) => g.visible).map((group, i) => (
-              <div key={i} className="skill-box md:max-w-[30vw]">
+              <div key={i} className="skill-box break-inside-avoid mb-4">
                 <div className={`${sora.className} lg:text-[30px] xs:text-[16px]`}>{group.title}</div>
                 <div className="skill-box-content">
                   {group.items.map((item, j) => (
